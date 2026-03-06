@@ -11,6 +11,7 @@
     --cream:#f5f0e8; --paper:#faf8f4; --ink:#1a1a2e; --ink-light:#3d3d5c;
     --red:#c0392b; --red-light:#e74c3c; --blue-ink:#1a3a5c;
     --line:#c8bfa8; --line-light:#e0d8cc; --green-ok:#27ae60;
+    --amber:#d68910; --purple:#6c3483;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{
@@ -18,9 +19,9 @@
     background-image:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.3) 29px,rgba(180,160,120,.3) 30px);
     min-height:100vh;font-family:'Noto Sans JP',sans-serif;color:var(--ink);padding:20px;
   }
-  .pw{max-width:820px;margin:0 auto;}
+  .pw{max-width:860px;margin:0 auto;}
 
-  /* ── header ── */
+  /* ── HEADER ── */
   .kh{background:var(--paper);border:2px solid var(--ink);border-bottom:none;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
   .kh-top{background:var(--ink);color:var(--cream);display:flex;justify-content:space-between;align-items:center;padding:8px 20px;}
   .hn{font-family:'Noto Serif JP',serif;font-size:11px;letter-spacing:3px;opacity:.8;}
@@ -34,15 +35,23 @@
   .dl{color:var(--ink-light);letter-spacing:1px;width:40px;font-size:10px;}
   .dv{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--blue-ink);font-weight:bold;}
 
-  /* ── bars ── */
+  /* ── TABS ── */
+  .tabs{background:var(--ink);display:flex;border-bottom:none;}
+  .tab{flex:1;padding:12px 8px;text-align:center;cursor:pointer;font-family:'Noto Serif JP',serif;font-size:13px;letter-spacing:2px;color:rgba(255,255,255,.5);border-right:1px solid rgba(255,255,255,.1);transition:all .2s;user-select:none;}
+  .tab:last-child{border-right:none;}
+  .tab.active{color:var(--cream);background:rgba(255,255,255,.1);border-bottom:2px solid var(--red);}
+  .tab:hover:not(.active){color:rgba(255,255,255,.8);}
+
+  /* ── CHAR BAR ── */
   .cmgr{background:var(--paper);border:2px solid var(--ink);border-top:none;border-bottom:none;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .bl{font-size:10px;letter-spacing:2px;color:var(--ink-light);white-space:nowrap;}
   .ctogs{display:flex;gap:8px;flex-wrap:wrap;}
   .ctog{padding:5px 12px;border:1px solid var(--line);font-size:11px;cursor:pointer;letter-spacing:1px;color:var(--ink-light);background:#faf8f4;user-select:none;transition:all .15s;}
   .ctog.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
 
-  /* ── body ── */
+  /* ── BODY ── */
   .kb{background:var(--paper);border:2px solid var(--ink);border-top:none;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
+  .tab-content{display:none;} .tab-content.active{display:block;}
   .sd{display:flex;align-items:center;padding:8px 20px;background:#ede8dd;border-bottom:1px solid var(--line);border-top:1px solid var(--line);gap:10px;}
   .sn{width:22px;height:22px;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;font-size:11px;flex-shrink:0;}
   .st{font-family:'Noto Serif JP',serif;font-size:12px;letter-spacing:3px;}
@@ -50,7 +59,7 @@
   .fs{padding:16px 20px 20px;border-bottom:1px solid var(--line-light);}
   .fr{display:flex;align-items:flex-start;margin-bottom:14px;gap:12px;}
   .fr:last-child{margin-bottom:0;}
-  .fl{font-size:11px;letter-spacing:1px;color:var(--ink-light);width:100px;flex-shrink:0;padding-top:8px;display:flex;align-items:center;gap:4px;}
+  .fl{font-size:11px;letter-spacing:1px;color:var(--ink-light);width:110px;flex-shrink:0;padding-top:8px;display:flex;align-items:center;gap:4px;}
   .fl::before{content:'▸';color:var(--red);font-size:8px;}
   .fc{flex:1;}
 
@@ -61,7 +70,7 @@
   select{appearance:none;-webkit-appearance:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231a1a2e'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
-  select:focus,textarea:focus,input:focus{border-color:var(--blue-ink);background:#fefdfb;}
+  select:focus,textarea:focus,input:focus{border-color:var(--blue-ink);}
   textarea{resize:vertical;min-height:60px;line-height:1.6;}
 
   .tg{display:flex;flex-wrap:wrap;gap:6px;}
@@ -70,11 +79,12 @@
   .tc:hover:not(.on){border-color:var(--ink);color:var(--ink);}
 
   .rs{display:flex;}
-  .rb{flex:1;padding:8px 4px;border:1px solid var(--line);border-right:none;background:#faf8f4;cursor:pointer;font-size:11px;text-align:center;color:var(--ink-light);transition:all .15s;font-family:'Noto Sans JP',sans-serif;letter-spacing:.5px;}
+  .rb{flex:1;padding:8px 4px;border:1px solid var(--line);border-right:none;background:#faf8f4;cursor:pointer;font-size:11px;text-align:center;color:var(--ink-light);transition:all .15s;font-family:'Noto Sans JP',sans-serif;}
   .rb:last-child{border-right:1px solid var(--line);}
   .rb.ag{background:var(--green-ok);color:#fff;border-color:var(--green-ok);}
   .rb.ab{background:var(--blue-ink);color:#fff;border-color:var(--blue-ink);}
-  .rb:hover:not(.ag):not(.ab){background:#ede8dd;color:var(--ink);}
+  .rb.ap{background:var(--purple);color:#fff;border-color:var(--purple);}
+  .rb:hover:not(.ag):not(.ab):not(.ap){background:#ede8dd;color:var(--ink);}
 
   .tr{display:flex;gap:8px;}
   .to{padding:6px 16px;border:1px solid var(--line);font-size:12px;cursor:pointer;letter-spacing:1px;color:var(--ink-light);transition:all .15s;user-select:none;}
@@ -93,9 +103,13 @@
   .sb{background:var(--red);color:#fff;border:none;padding:12px 32px;font-family:'Noto Serif JP',serif;font-size:14px;letter-spacing:4px;cursor:pointer;transition:all .2s;box-shadow:3px 3px 0 rgba(0,0,0,.2);}
   .sb:hover:not(:disabled){background:var(--red-light);transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(0,0,0,.2);}
   .sb:disabled{opacity:.6;cursor:not-allowed;}
+  .sb-blue{background:var(--blue-ink);}
+  .sb-blue:hover:not(:disabled){background:#0f2a45;}
+  .sb-purple{background:var(--purple);}
+  .sb-purple:hover:not(:disabled){background:#5b2c6f;}
   .eb{padding:10px 20px;background:#fff0f0;border-top:1px solid var(--red);font-size:12px;color:var(--red);letter-spacing:1px;}
 
-  /* ── response ── */
+  /* ── RESPONSE ── */
   .rw{margin-top:20px;}
   .rh{background:var(--ink);color:var(--cream);padding:10px 20px;display:flex;align-items:center;gap:12px;font-family:'Noto Serif JP',serif;font-size:12px;letter-spacing:3px;}
   .pd{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.5s ease-in-out infinite;}
@@ -113,7 +127,7 @@
   .hin .cb{background:#f0f0ff;border-color:#9999cc} .hin .cn{color:#4a4a8a}
   .ben .cb{background:#fff0f0;border-color:#cc6666} .ben .cn{color:#8a2020}
 
-  /* ── loading ── */
+  /* ── LOADING ── */
   .la{background:var(--paper);border:2px solid var(--ink);border-top:none;padding:30px;text-align:center;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
   .ld{display:flex;justify-content:center;gap:8px;margin-bottom:12px;}
   .ldt{width:8px;height:8px;background:var(--ink);animation:b 1.2s ease-in-out infinite;}
@@ -121,7 +135,7 @@
   @keyframes b{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-8px);opacity:1}}
   .lt{font-size:11px;letter-spacing:2px;color:var(--ink-light);}
 
-  /* ── history ── */
+  /* ── HISTORY ── */
   .ht{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#ede8dd;border:2px solid var(--ink);border-top:none;cursor:pointer;font-size:11px;letter-spacing:2px;color:var(--ink-light);}
   .ht:hover{background:#e0dbd0;}
   .hc{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--blue-ink);}
@@ -129,11 +143,69 @@
   .hi{padding:12px 20px;border-bottom:1px solid var(--line-light);display:flex;justify-content:space-between;align-items:center;}
   .hid{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--blue-ink);}
   .his{font-size:11px;color:var(--ink-light);margin-top:2px;}
-  .db{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;letter-spacing:1px;}
+  .db{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;}
+
+  /* ── DIAGNOSIS ── */
+  .diag-q{padding:20px;border-bottom:1px solid var(--line-light);}
+  .diag-q-text{font-size:14px;line-height:1.8;color:var(--ink);margin-bottom:14px;font-family:'Noto Serif JP',serif;}
+  .diag-q-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--ink-light);margin-bottom:6px;letter-spacing:2px;}
+  .diag-opts{display:flex;flex-direction:column;gap:8px;}
+  .diag-opt{padding:10px 14px;border:1px solid var(--line);cursor:pointer;font-size:12px;color:var(--ink-light);transition:all .15s;user-select:none;display:flex;align-items:center;gap:10px;}
+  .diag-opt:hover{border-color:var(--purple);color:var(--ink);}
+  .diag-opt.on{background:var(--purple);color:#fff;border-color:var(--purple);}
+  .diag-opt-key{font-family:'Share Tech Mono',monospace;font-size:11px;width:20px;flex-shrink:0;}
+  .diag-free{margin-top:10px;}
+  .diag-progress{height:4px;background:var(--line-light);margin:0;}
+  .diag-progress-bar{height:4px;background:var(--purple);transition:width .3s;}
+  .diag-result{padding:24px 20px;}
+  .diag-result-type{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:600;letter-spacing:4px;color:var(--purple);margin-bottom:8px;}
+  .diag-result-sub{font-size:12px;letter-spacing:2px;color:var(--ink-light);margin-bottom:16px;}
+  .diag-result-desc{font-size:13px;line-height:1.9;color:var(--ink);padding:16px;background:#f8f4ff;border-left:3px solid var(--purple);}
+  .diag-axes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+  .diag-axis{padding:12px;border:1px solid var(--line-light);background:#faf8f4;}
+  .diag-axis-label{font-size:10px;letter-spacing:2px;color:var(--ink-light);margin-bottom:6px;}
+  .diag-axis-bar{height:8px;background:var(--line-light);border-radius:0;position:relative;}
+  .diag-axis-fill{height:8px;background:var(--purple);transition:width .5s;}
+  .diag-axis-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--purple);margin-top:4px;}
+  .diag-hist-item{padding:12px 20px;border-bottom:1px solid var(--line-light);cursor:pointer;}
+  .diag-hist-item:hover{background:#f5f0e8;}
+  .diag-hist-type{font-family:'Noto Serif JP',serif;font-size:13px;color:var(--purple);letter-spacing:2px;}
+  .diag-hist-date{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--ink-light);margin-top:2px;}
+
+  /* ── STATS ── */
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line-light);}
+  .stat-card{padding:20px;border-bottom:1px solid var(--line-light);border-right:1px solid var(--line-light);}
+  .stat-card:nth-child(even){border-right:none;}
+  .stat-card-full{grid-column:1/-1;padding:20px;border-bottom:1px solid var(--line-light);}
+  .stat-title{font-size:10px;letter-spacing:2px;color:var(--ink-light);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+  .stat-title::before{content:'';width:8px;height:8px;background:var(--ink);display:inline-block;}
+  .stat-num{font-family:'Share Tech Mono',monospace;font-size:32px;color:var(--ink);line-height:1;}
+  .stat-num-unit{font-size:12px;color:var(--ink-light);margin-left:4px;}
+  .bar-chart{display:flex;flex-direction:column;gap:8px;}
+  .bar-row{display:flex;align-items:center;gap:8px;}
+  .bar-label{font-size:11px;color:var(--ink-light);width:130px;flex-shrink:0;letter-spacing:.5px;text-align:right;}
+  .bar-track{flex:1;height:14px;background:var(--line-light);position:relative;}
+  .bar-fill{height:14px;background:var(--ink);transition:width .5s;}
+  .bar-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--ink-light);width:24px;text-align:right;}
+  .line-chart{position:relative;height:100px;margin-top:8px;}
+  .lc-svg{width:100%;height:100%;overflow:visible;}
+  .vol-badge{display:inline-block;padding:3px 8px;font-size:10px;letter-spacing:1px;margin:2px;}
+  .vol-hi{background:var(--blue-ink);color:#fff;}
+  .vol-md{background:#888;color:#fff;}
+  .vol-lo{background:var(--line);color:var(--ink);}
+  .mel-advice{background:#fde8f0;border:1px solid #f8aac8;padding:16px;margin-top:0;}
+  .mel-advice-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .mel-advice-name{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:600;color:#c0517a;letter-spacing:2px;}
+  .mel-advice-text{font-size:13px;line-height:1.9;color:var(--ink);white-space:pre-wrap;}
+  .data-mgmt{padding:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#ede8dd;border-top:1px solid var(--line);}
+  .data-info{font-size:11px;color:var(--ink-light);letter-spacing:1px;}
+  .expire-warn{font-size:11px;color:var(--amber);letter-spacing:1px;}
 
   @media(max-width:600px){
     body{padding:10px}.fr{flex-direction:column}.fl{width:auto;padding-top:0}
     .kt{font-size:16px}.rb{font-size:9px;padding:6px 2px}
+    .stats-grid{grid-template-columns:1fr}.stat-card:nth-child(even){border-right:1px solid var(--line-light);}
+    .diag-axes{grid-template-columns:1fr;}
   }
 </style>
 </head>
@@ -141,7 +213,7 @@
 <div class="pw" id="app"></div>
 <script>
 // ============================================================
-//  データ定義・API
+//  キャラクター・タグ定義
 // ============================================================
 const CHARS=[
   {id:'mel',name:'夜空メル',emoji:'🌸',role:'Head Nurse / 担当ナース',cls:'mel',
@@ -157,93 +229,260 @@ const SATS=['非常に不満','不満','普通','満足','非常に満足'];
 const VOLS=['非常に少ない','少ない','普通','多い','非常に多い'];
 const METHODS=['手淫（利き手）','手淫（逆手）','手淫（両手）','オナホール使用','玩具使用（その他）','複合（手淫＋玩具）','その他'];
 
+// ── マゾ診断質問定義 ──
+const DIAG_QUESTIONS = [
+  {id:'q1', text:'性的な場面で最も興奮するシチュエーションはどれですか？',
+   opts:['支配・命令される','恥ずかしめられる・晒される','痛みや拘束を受ける','強制・強引にされる','心理的に追い詰められる','ひたすら奉仕・尽くす'],
+   free:'具体的にどんなシチュエーションか記述してください（任意）', axis:'control'},
+  {id:'q2', text:'相手に求める関係性として最も近いものは？',
+   opts:['絶対的な支配者（女王・主人）','優しく包み込む母性的な存在','冷たく見下す存在','嫌々ながらも関わってくれる存在','感情なく道具として扱う存在','熱烈に求めてくれる存在'],
+   free:'理想の関係性について自由に記述してください（任意）', axis:'relation'},
+  {id:'q3', text:'羞恥心について最も当てはまるものは？',
+   opts:['羞恥心が強く、それが興奮の核心','羞恥心はあるが克服したい','羞恥心はあまりない、むしろ開放的','羞恥心より服従感の方が重要','見られること自体が快感','自己嫌悪が興奮に変わる'],
+   free:'羞恥心に関して思うことを自由に記述してください（任意）', axis:'shame'},
+  {id:'q4', text:'オナニー後の感情として最も近いものは？',
+   opts:['満足感・充足感','罪悪感・自己嫌悪（しかしそれも快感）','空虚感・寂しさ','依存感・もっと欲しい気持ち','解放感・すっきり感','達成感・記録したい気持ち'],
+   free:'オナニー後の心理状態について記述してください（任意）', axis:'after'},
+  {id:'q5', text:'最も強く反応するコンテンツ・表現は？',
+   opts:['言葉責め・罵倒系','身体的制圧・拘束系','心理的支配・洗脳系','NTR・寝取られ系','奉仕・搾精管理系','睡眠姦・無意識系'],
+   free:'特に好きな作品やシーンがあれば記述してください（任意）', axis:'content'},
+  {id:'q6', text:'自分のマゾ性質をどう認識していますか？',
+   opts:['完全に受け入れている・誇りに思う','受け入れているが誰にも言えない','葛藤しながらも否定できない','まだよく分からない・模索中','マゾとは思っていないが…','もっと深めたい・探求したい'],
+   free:'自分の性質についての考えを自由に記述してください（任意）', axis:'identity'},
+];
+
+// ── マゾタイプ定義 ──
+const MAZO_TYPES = {
+  'S型服従': {desc:'支配・命令への服従に最大の快楽を見出すタイプ。明確なヒエラルキーの中で自分の位置を確認することで安心感と興奮を得る。八雲べにのような搾精管理官との相性が最高。', color:'#8a2020'},
+  '羞恥開花型': {desc:'羞恥心そのものが快楽の源泉。晒され、見られ、恥ずかしめられることで本来の自分が解放される感覚を持つ。橘ひなのの軽蔑の視線が最大の報酬。', color:'#4a4a8a'},
+  '母性依存型': {desc:'支配よりも包容力・母性への依存が核心。甘やかされ、受け入れられることへの渇望が性的興奮と直結している。夜空メルとの親密な関係が理想形。', color:'#c0517a'},
+  '痛苦快楽型': {desc:'身体的・精神的な苦痛を快楽に変換する高度な感受性を持つ。苦しみの中に純粋な快楽を見出す本物のマゾヒスト。強度の刺激を求める傾向がある。', color:'#5b2c6f'},
+  '心理服従型': {desc:'身体的な制圧より心理的支配に強く反応するタイプ。洗脳・調教・精神的追い詰めが最大の快楽源。相手の言葉と態度が全て。', color:'#1a3a5c'},
+  '奉仕献身型': {desc:'与えること・尽くすことに喜びを見出す献身的マゾ。搾精・奉仕・管理される側として自分の存在意義を確認する。相手を喜ばせることが最大の報酬。', color:'#27ae60'},
+};
+
 // ============================================================
 //  State
 // ============================================================
-let S={
-  method:'',onahole:'使用なし',onaholeName:'',duration:10,
-  sits:new Set(),meds:new Set(),
-  sat:'',vol:'',interval:24,memo:'',
+let S = {
+  // タブ
+  tab: 'karte',
+  // カルテ
+  method:'', onahole:'使用なし', onaholeName:'', duration:10,
+  sits:new Set(), meds:new Set(),
+  sat:'', vol:'', interval:24, memo:'',
   chars:new Set(['mel','hin','ben']),
-  loading:false,error:'',responses:[],histOpen:false,
-  records:[]
+  loading:false, error:'', responses:[],
+  histOpen:false, records:[],
+  // 診断
+  diagAnswers:{},  // qid -> {opt, free}
+  diagStep:0,      // 0=intro, 1-6=質問, 7=結果
+  diagLoading:false,
+  diagResults:[],  // 過去診断履歴
+  diagHistOpen:false,
+  diagError:'',
+  // 統計
+  statsLoading:false, statsComment:'', statsError:'',
 };
-try{S.records=JSON.parse(localStorage.getItem('hr')||'[]');}catch(e){}
+
+// ── ローカルストレージ読み込み ──
+function loadStorage() {
+  try { S.records = JSON.parse(localStorage.getItem('hr') || '[]'); } catch(e){}
+  try { S.diagResults = JSON.parse(localStorage.getItem('dr') || '[]'); } catch(e){}
+  // 3年経過データ削除
+  const THREE_YEARS = 3 * 365 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  S.records = S.records.filter(r => now - new Date(r.timestamp).getTime() < THREE_YEARS);
+  S.diagResults = S.diagResults.filter(r => now - new Date(r.timestamp).getTime() < THREE_YEARS);
+}
+loadStorage();
 
 // ============================================================
-//  API呼び出し  →  /api/chat (Vercel serverless)
+//  API呼び出し
 // ============================================================
-async function callAPI(c, data){
-  const sit=[...data.sits].join('、')||'特になし';
-  const med=[...data.meds].join('、')||'特になし';
-  const userMessage=`以下の患者の自慰記録に対して、あなたのキャラクターとして自然なセリフでコメントしてください。コメントは3〜5文程度で、キャラクターの個性を強く出してください。
-
-【患者記録】
-実施方法：${data.method||'未記入'}
-オナホ使用：${data.onahole}${data.onaholeName?`（${data.onaholeName}）`:''}
-所要時間：${data.duration}分
-シチュエーション：${sit}
-メディア種別：${med}
-満足度：${data.sat||'未評価'}
-射精量：${data.vol||'未評価'}
-前回からの経過時間：${data.interval}時間
-特記事項：${data.memo||'なし'}
-
-キャラクターとしてのコメント（セリフのみ）：`;
-
+async function callAPI(system, userMessage) {
   const r = await fetch('/api/chat', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({ system: c.sys, userMessage })
+    body:JSON.stringify({ system, userMessage })
   });
-
-  if(!r.ok){
-    const j=await r.json().catch(()=>({}));
-    throw new Error(j.error||`Server Error ${r.status}`);
+  if (!r.ok) {
+    const j = await r.json().catch(()=>({}));
+    throw new Error(j.error || `Server Error ${r.status}`);
   }
-  const j=await r.json();
-  return j.text||'（取得失敗）';
+  const j = await r.json();
+  return j.text || '（取得失敗）';
 }
 
 // ============================================================
-//  Render
+//  ユーティリティ
 // ============================================================
 function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function p(n){return String(n).padStart(2,'0');}
-function now(){const d=new Date();return{date:`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`,time:`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`};}
+function now(){const d=new Date();return{date:`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`,time:`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`,};}
 function fmt(iso){const d=new Date(iso);return`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
 
+// マゾタイプ判定
+function calcMazoType(answers) {
+  const scores = {control:0,relation:0,shame:0,after:0,content:0,identity:0};
+  // 各質問の回答インデックスを軸スコアに変換
+  const axisMap = {
+    q1:{0:'control',1:'shame',2:'content',3:'control',4:'relation',5:'relation'},
+    q2:{0:'control',1:'relation',2:'relation',3:'relation',4:'content',5:'relation'},
+    q3:{0:'shame',1:'shame',2:'identity',3:'control',4:'shame',5:'after'},
+    q4:{0:'identity',1:'after',2:'after',3:'content',4:'identity',5:'identity'},
+    q5:{0:'content',1:'control',2:'relation',3:'content',4:'relation',5:'content'},
+    q6:{0:'identity',1:'identity',2:'after',3:'identity',4:'identity',5:'identity'},
+  };
+  for (const [qid, ans] of Object.entries(answers)) {
+    if (ans && ans.optIdx !== undefined) {
+      const axis = axisMap[qid]?.[ans.optIdx];
+      if (axis) scores[axis]++;
+    }
+  }
+  // スコアからタイプ決定
+  const maxAxis = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+  const typeMap = {
+    control:'S型服従', shame:'羞恥開花型', relation:'母性依存型',
+    content:'痛苦快楽型', after:'心理服従型', identity:'奉仕献身型'
+  };
+  return {type: typeMap[maxAxis] || 'S型服従', scores};
+}
+
 // ============================================================
-//  Render
+//  RENDER
 // ============================================================
-// textarea用：renderのたびにDOMが再生成されフォーカスが外れないようリスナーをアタッチ
-function attachListeners(){
+function attachListeners() {
   const memo = document.getElementById('memo-input');
   if (memo && !memo._attached) {
     memo._attached = true;
     memo.addEventListener('input', () => { S.memo = memo.value; });
   }
+  // 診断フリーテキスト
+  const freeEl = document.getElementById('diag-free-input');
+  if (freeEl && !freeEl._attached) {
+    freeEl._attached = true;
+    freeEl.addEventListener('input', () => {
+      const q = DIAG_QUESTIONS[S.diagStep - 1];
+      if (q) {
+        if (!S.diagAnswers[q.id]) S.diagAnswers[q.id] = {};
+        S.diagAnswers[q.id].free = freeEl.value;
+      }
+    });
+  }
 }
 
-function render(){
-  const n=now();
-  const kn=String(S.records.length+1).padStart(4,'0');
-  document.getElementById('app').innerHTML=`
+function render() {
+  const n = now();
+  const kn = String(S.records.length + 1).padStart(4,'0');
+  // 期限切れ警告
+  const expireCount = S.records.filter(r => {
+    const age = Date.now() - new Date(r.timestamp).getTime();
+    const TWO_YEARS_HALF = 2.5 * 365 * 24 * 60 * 60 * 1000;
+    return age > TWO_YEARS_HALF;
+  }).length;
+
+  document.getElementById('app').innerHTML = `
 <div class="kh">
-  <div class="kh-top"><span class="hn">個人健康管理センター　診療記録部</span><span class="kid">KARTE-${kn}</span></div>
+  <div class="kh-top">
+    <span class="hn">個人健康管理センター　診療記録部</span>
+    <span class="kid">KARTE-${kn}</span>
+  </div>
   <div class="kh-main">
-    <div class="kh-title"><div class="kt">自己健康管理カルテ</div><div class="ks">PERSONAL HEALTH MANAGEMENT RECORD — CONFIDENTIAL</div></div>
+    <div class="kh-title">
+      <div class="kt">自己健康管理カルテ</div>
+      <div class="ks">PERSONAL HEALTH MANAGEMENT RECORD — CONFIDENTIAL</div>
+    </div>
     <div class="kh-date">
       <div class="df"><span class="dl">記録日</span><span class="dv" id="dd">${n.date}</span></div>
       <div class="df"><span class="dl">時刻</span><span class="dv" id="dt">${n.time}</span></div>
     </div>
   </div>
+  <div class="tabs">
+    <div class="tab ${S.tab==='karte'?'active':''}" onclick="setTab('karte')">📋 カルテ記録</div>
+    <div class="tab ${S.tab==='diag'?'active':''}" onclick="setTab('diag')">🔬 マゾ診断</div>
+    <div class="tab ${S.tab==='stats'?'active':''}" onclick="setTab('stats')">📊 統計・分析</div>
+  </div>
 </div>
+
 <div class="cmgr">
   <span class="bl">担当医師</span>
-  <div class="ctogs">${CHARS.map(c=>`<div class="ctog ${S.chars.has(c.id)?'on':''}" onclick="tChar('${c.id}')">${c.emoji} ${c.name}</div>`).join('')}</div>
+  <div class="ctogs">
+    ${CHARS.map(c=>`<div class="ctog ${S.chars.has(c.id)?'on':''}" onclick="tChar('${c.id}')">${c.emoji} ${c.name}</div>`).join('')}
+  </div>
 </div>
+
 <div class="kb">
+
+  ${/* ===================== TAB: カルテ ===================== */
+  S.tab === 'karte' ? renderKarte() : ''}
+  ${S.tab === 'diag' ? renderDiag() : ''}
+  ${S.tab === 'stats' ? renderStats() : ''}
+
+  ${expireCount > 0 ? `
+  <div class="data-mgmt">
+    <span class="expire-warn">⚠ ${expireCount}件のデータが3年期限に近づいています</span>
+  </div>` : ''}
+
+</div>
+
+${S.loading ? `
+<div class="la">
+  <div class="ld"><div class="ldt"></div><div class="ldt"></div><div class="ldt"></div></div>
+  <div class="lt">担当医師がカルテを確認中…</div>
+</div>` : ''}
+
+${S.responses.length > 0 ? `
+<div class="rw">
+  <div class="rh"><div class="pd"></div><span>担当医師コメント</span></div>
+  <div class="rc">
+    ${S.responses.map((r,i)=>`
+    <div class="cc ${r.cls}" style="animation-delay:${i*.15}s">
+      <div class="ch"><div class="cb">${r.emoji}</div><div><div class="cn">${r.name}</div><div class="cr">${r.role}</div></div></div>
+      <div class="ct">${e(r.comment)}</div>
+    </div>`).join('')}
+  </div>
+</div>` : ''}
+
+${S.diagLoading ? `
+<div class="la">
+  <div class="ld"><div class="ldt"></div><div class="ldt"></div><div class="ldt"></div></div>
+  <div class="lt">診断結果を分析中…</div>
+</div>` : ''}
+
+<div class="ht" onclick="tHist()"><span>▸</span> カルテ記録履歴<span class="hc">${S.records.length}件</span></div>
+${S.histOpen ? `
+<div class="hp">
+  ${S.records.length === 0
+    ? '<div style="padding:20px;text-align:center;font-size:11px;color:var(--ink-light)">記録なし</div>'
+    : S.records.map((r,i) => `
+  <div class="hi">
+    <div>
+      <div class="hid">${fmt(r.timestamp)}</div>
+      <div class="his">${e(r.method||'未記入')} ／ 満足度:${r.sat||'未評価'} ／ 射精量:${r.vol||'未評価'}</div>
+    </div>
+    <button class="db" onclick="delRecord(${i})">削除</button>
+  </div>`).join('')}
+</div>` : ''}
+
+<div class="ht" style="margin-top:2px" onclick="tDiagHist()"><span>▸</span> 診断履歴<span class="hc">${S.diagResults.length}件</span></div>
+${S.diagHistOpen ? `
+<div class="hp">
+  ${S.diagResults.length === 0
+    ? '<div style="padding:20px;text-align:center;font-size:11px;color:var(--ink-light)">診断なし</div>'
+    : S.diagResults.map((r,i) => `
+  <div class="diag-hist-item">
+    <div class="diag-hist-type">${e(r.type)}</div>
+    <div class="diag-hist-date">${fmt(r.timestamp)}</div>
+  </div>`).join('')}
+</div>` : ''}
+`;
+  attachListeners();
+}
+
+// ── カルテタブ ──
+function renderKarte() {
+  return `
   <div class="sd"><div class="sn">01</div><span class="st">実施方法</span><div class="sl"></div></div>
   <div class="fs">
     <div class="fr">
@@ -267,114 +506,419 @@ function render(){
     </div>
     <div class="fr">
       <div class="fl">所要時間</div>
-      <div class="fc"><div class="di"><input type="number" id="dur-input" min="0.1" max="180" step="0.1" value="${S.duration}" onchange="set('duration',+this.value)"><span class="du">分　（0.1 = 6秒）</span></div></div>
+      <div class="fc">
+        <div class="di">
+          <input type="number" min="0.1" max="180" step="0.1" value="${S.duration}" onchange="set('duration',+this.value)">
+          <span class="du">分　（0.1 = 6秒）</span>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="sd"><div class="sn">02</div><span class="st">刺激要因記録（複数選択可）</span><div class="sl"></div></div>
   <div class="fs">
     <div class="fr">
       <div class="fl">シチュエーション</div>
-      <div class="fc"><div class="tg">${SITS.map(s=>`<div class="tc ${S.sits.has(s)?'on':''}" onclick="tSet('sits','${s.replace(/'/g,"\\'")}')">${s}</div>`).join('')}</div></div>
+      <div class="fc">
+        <div class="tg">
+          ${SITS.map(s=>`<div class="tc ${S.sits.has(s)?'on':''}" onclick="tSet('sits','${s.replace(/'/g,"&#39;")}')">${s}</div>`).join('')}
+        </div>
+      </div>
     </div>
     <div class="fr">
       <div class="fl">メディア種別</div>
-      <div class="fc"><div class="tg">${MEDS.map(m=>`<div class="tc ${S.meds.has(m)?'on':''}" onclick="tSet('meds','${m.replace(/'/g,"\\'")}')">${m}</div>`).join('')}</div></div>
+      <div class="fc">
+        <div class="tg">
+          ${MEDS.map(m=>`<div class="tc ${S.meds.has(m)?'on':''}" onclick="tSet('meds','${m.replace(/'/g,"&#39;")}')">${m}</div>`).join('')}
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="sd"><div class="sn">03</div><span class="st">評価指標</span><div class="sl"></div></div>
   <div class="fs">
     <div class="fr">
       <div class="fl">満足度</div>
-      <div class="fc"><div class="rs">${SATS.map(v=>`<button class="rb ${S.sat===v?'ag':''}" onclick="set('sat','${v}')">${v}</button>`).join('')}</div></div>
+      <div class="fc">
+        <div class="rs">${SATS.map(v=>`<button class="rb ${S.sat===v?'ag':''}" onclick="set('sat','${v}')">${v}</button>`).join('')}</div>
+      </div>
     </div>
     <div class="fr">
       <div class="fl">射精量</div>
-      <div class="fc"><div class="rs">${VOLS.map(v=>`<button class="rb ${S.vol===v?'ab':''}" onclick="set('vol','${v}')">${v}</button>`).join('')}</div></div>
+      <div class="fc">
+        <div class="rs">${VOLS.map(v=>`<button class="rb ${S.vol===v?'ab':''}" onclick="set('vol','${v}')">${v}</button>`).join('')}</div>
+      </div>
     </div>
     <div class="fr">
       <div class="fl">前回からの経過</div>
-      <div class="fc"><div class="di"><input type="number" min="0" max="720" value="${S.interval}" oninput="set('interval',+this.value)"><span class="du">時間（目安）</span></div></div>
+      <div class="fc">
+        <div class="di">
+          <input type="number" min="0" max="720" value="${S.interval}" onchange="set('interval',+this.value)">
+          <span class="du">時間（目安）</span>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="sd"><div class="sn">04</div><span class="st">所見・備考</span><div class="sl"></div></div>
   <div class="fs">
     <div class="fr">
       <div class="fl">特記事項</div>
-      <div class="fc"><textarea id="memo-input" class="ma" placeholder="特記事項があれば記入してください…">${e(S.memo)}</textarea></div>
+      <div class="fc">
+        <textarea id="memo-input" class="ma" placeholder="特記事項があれば記入してください…">${e(S.memo)}</textarea>
+      </div>
     </div>
   </div>
+
   <div class="sa">
     <span class="sh">記録を送信すると担当医師からコメントが届きます</span>
-    <button class="sb" ${S.loading?'disabled':''} onclick="submit()">${S.loading?'送信中…':'▶ カルテ送信'}</button>
+    <button class="sb ${S.loading?'':'sb'}" ${S.loading?'disabled':''} onclick="submitKarte()">
+      ${S.loading ? '送信中…' : '▶ カルテ送信'}
+    </button>
   </div>
-  ${S.error?`<div class="eb">⚠ ${e(S.error)}</div>`:''}
-</div>
-${S.loading?`<div class="la"><div class="ld"><div class="ldt"></div><div class="ldt"></div><div class="ldt"></div></div><div class="lt">担当医師がカルテを確認中…</div></div>`:''}
-${S.responses.length>0?`
-<div class="rw">
-  <div class="rh"><div class="pd"></div><span>担当医師コメント</span></div>
-  <div class="rc">${S.responses.map((r,i)=>`
-  <div class="cc ${r.cls}" style="animation-delay:${i*.15}s">
-    <div class="ch"><div class="cb">${r.emoji}</div><div><div class="cn">${r.name}</div><div class="cr">${r.role}</div></div></div>
-    <div class="ct">${e(r.comment)}</div>
-  </div>`).join('')}</div>
-</div>`:''}
-<div class="ht" onclick="tHist()"><span>▸</span> 記録履歴 RECORD HISTORY<span class="hc">${S.records.length}件</span></div>
-${S.histOpen?`<div class="hp">${S.records.length===0?'<div style="padding:20px;text-align:center;font-size:11px;color:var(--ink-light)">記録なし</div>':S.records.map((r,i)=>`<div class="hi"><div><div class="hid">${fmt(r.timestamp)}</div><div class="his">${e(r.method||'未記入')} ／ 満足度:${r.sat||'未評価'} ／ 射精量:${r.vol||'未評価'}</div></div><button class="db" onclick="del(${i})">削除</button></div>`).join('')}</div>`:''}
-`;
-  attachListeners();
+  ${S.error ? `<div class="eb">⚠ ${e(S.error)}</div>` : ''}`;
+}
+
+// ── 診断タブ ──
+function renderDiag() {
+  if (S.diagStep === 0) {
+    // イントロ
+    const latestDiag = S.diagResults[0];
+    return `
+  <div class="sd"><div class="sn">🔬</div><span class="st">マゾ性質診断</span><div class="sl"></div></div>
+  <div class="fs" style="padding:24px 20px;">
+    <p style="font-size:13px;line-height:1.9;color:var(--ink);margin-bottom:16px;">
+      ${DIAG_QUESTIONS.length}つの質問に回答することで、あなたのマゾ性質タイプを診断します。<br>
+      選択肢から最も近いものを選び、自由記述欄で詳しく補足することもできます。<br>
+      診断は何度でも可能で、過去の診断履歴を参考に深掘り分析も行います。
+    </p>
+    ${latestDiag ? `
+    <div style="padding:12px;background:#f8f4ff;border-left:3px solid var(--purple);margin-bottom:16px;">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--ink-light);margin-bottom:4px;">前回の診断結果</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:16px;color:var(--purple);letter-spacing:2px;">${e(latestDiag.type)}</div>
+      <div style="font-size:11px;color:var(--ink-light);margin-top:2px;">${fmt(latestDiag.timestamp)}</div>
+    </div>` : ''}
+  </div>
+  <div class="sa">
+    <span class="sh">診断には約5分かかります</span>
+    <button class="sb sb-purple" onclick="startDiag()">▶ 診断を開始する</button>
+  </div>`;
+  }
+
+  if (S.diagStep > DIAG_QUESTIONS.length) {
+    // 結果表示
+    return renderDiagResult();
+  }
+
+  // 質問表示
+  const qIdx = S.diagStep - 1;
+  const q = DIAG_QUESTIONS[qIdx];
+  const ans = S.diagAnswers[q.id] || {};
+  const progress = (S.diagStep / DIAG_QUESTIONS.length) * 100;
+
+  return `
+  <div class="diag-progress"><div class="diag-progress-bar" style="width:${progress}%"></div></div>
+  <div class="diag-q">
+    <div class="diag-q-num">質問 ${S.diagStep} / ${DIAG_QUESTIONS.length}</div>
+    <div class="diag-q-text">${e(q.text)}</div>
+    <div class="diag-opts">
+      ${q.opts.map((opt,i)=>`
+      <div class="diag-opt ${ans.optIdx===i?'on':''}" onclick="selectDiagOpt('${q.id}',${i})">
+        <span class="diag-opt-key">${String.fromCharCode(65+i)}</span>
+        <span>${e(opt)}</span>
+      </div>`).join('')}
+    </div>
+    <div class="diag-free">
+      <textarea id="diag-free-input" class="ma" style="min-height:50px;font-size:12px;" placeholder="${e(q.free)}">${e(ans.free||'')}</textarea>
+    </div>
+  </div>
+  <div class="sa" style="justify-content:space-between;">
+    <button class="sb sb-blue" onclick="diagBack()" ${S.diagStep<=1?'disabled':''}>◀ 戻る</button>
+    <button class="sb sb-purple" onclick="diagNext()" ${ans.optIdx===undefined?'disabled':''}>
+      ${S.diagStep === DIAG_QUESTIONS.length ? '▶ 診断する' : '▶ 次へ'}
+    </button>
+  </div>
+  ${S.diagError ? `<div class="eb">⚠ ${e(S.diagError)}</div>` : ''}`;
+}
+
+function renderDiagResult() {
+  const latest = S.diagResults[0];
+  if (!latest) return '';
+  const typeInfo = MAZO_TYPES[latest.type] || {};
+  const scores = latest.scores || {};
+  const maxScore = Math.max(...Object.values(scores), 1);
+
+  const axisLabels = {control:'支配服従', shame:'羞恥感受', relation:'関係依存', after:'内省傾向', content:'刺激嗜好', identity:'自己認識'};
+
+  return `
+  <div class="sd"><div class="sn">✓</div><span class="st">診断結果</span><div class="sl"></div></div>
+  <div class="diag-result">
+    <div class="diag-result-type">${e(latest.type)}</div>
+    <div class="diag-result-sub">${fmt(latest.timestamp)} 実施</div>
+    <div class="diag-result-desc">${e(typeInfo.desc||'')}</div>
+    <div class="diag-axes">
+      ${Object.entries(scores).map(([axis,val])=>`
+      <div class="diag-axis">
+        <div class="diag-axis-label">${axisLabels[axis]||axis}</div>
+        <div class="diag-axis-bar"><div class="diag-axis-fill" style="width:${(val/maxScore)*100}%"></div></div>
+        <div class="diag-axis-val">${val} pt</div>
+      </div>`).join('')}
+    </div>
+    ${latest.aiComment ? `
+    <div style="margin-top:16px;">
+      <div class="mel-advice">
+        <div class="mel-advice-hdr"><span style="font-size:20px">🌸</span><span class="mel-advice-name">夜空メルからのコメント</span></div>
+        <div class="mel-advice-text">${e(latest.aiComment)}</div>
+      </div>
+    </div>` : ''}
+  </div>
+  <div class="sa" style="justify-content:space-between;">
+    <button class="sb sb-blue" onclick="startDiag()">▶ もう一度診断する</button>
+    <button class="sb sb-purple" onclick="set('tab','stats')">📊 統計と照らし合わせる</button>
+  </div>`;
+}
+
+// ── 統計タブ ──
+function renderStats() {
+  const records = S.records;
+  const total = records.length;
+  if (total === 0) {
+    return `
+  <div class="fs" style="padding:40px 20px;text-align:center;">
+    <div style="font-size:12px;letter-spacing:2px;color:var(--ink-light)">カルテ記録がありません</div>
+    <div style="font-size:11px;color:var(--ink-light);margin-top:8px">先にカルテタブで記録してください</div>
+  </div>`;
+  }
+
+  // 統計計算
+  const sitCount = {};
+  const volCount = {};
+  const satCount = {};
+  let totalDuration = 0;
+  let durationCount = 0;
+
+  records.forEach(r => {
+    (r.sits||[]).forEach(s => { sitCount[s] = (sitCount[s]||0)+1; });
+    if (r.vol) volCount[r.vol] = (volCount[r.vol]||0)+1;
+    if (r.sat) satCount[r.sat] = (satCount[r.sat]||0)+1;
+    if (r.duration && r.duration > 0) { totalDuration += +r.duration; durationCount++; }
+  });
+
+  const topSits = Object.entries(sitCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxSit = topSits[0]?.[1] || 1;
+  const avgDur = durationCount > 0 ? (totalDuration/durationCount).toFixed(1) : '-';
+
+  // 射精量分布
+  const volOrder = ['非常に多い','多い','普通','少ない','非常に少ない'];
+  const volTotal = Object.values(volCount).reduce((a,b)=>a+b,0)||1;
+
+  // 満足度スコア
+  const satScore = {非常に不満:1,不満:2,普通:3,満足:4,非常に満足:5};
+  const satAvg = records.filter(r=>r.sat).length > 0
+    ? (records.filter(r=>r.sat).reduce((a,r)=>a+(satScore[r.sat]||3),0)/records.filter(r=>r.sat).length).toFixed(1)
+    : '-';
+
+  // 直近30件の射精量折れ線データ
+  const recent = records.slice(0,30).reverse();
+  const volVal = {非常に少ない:1,少ない:2,普通:3,多い:4,非常に多い:5};
+  const linePoints = recent.map((r,i) => {
+    const v = volVal[r.vol] || 3;
+    return { x: i, y: v };
+  });
+
+  const svgW = 400, svgH = 80;
+  const ptStr = linePoints.map((pt,i) => {
+    const x = (i/(Math.max(linePoints.length-1,1)))*svgW;
+    const y = svgH - ((pt.y-1)/4)*svgH;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return `
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">総記録数</div>
+      <div class="stat-num">${total}<span class="stat-num-unit">件</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">平均所要時間</div>
+      <div class="stat-num">${avgDur}<span class="stat-num-unit">分</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">平均満足度</div>
+      <div class="stat-num">${satAvg}<span class="stat-num-unit">/ 5</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">診断回数</div>
+      <div class="stat-num">${S.diagResults.length}<span class="stat-num-unit">回</span></div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-title">オカズ嗜好ランキング（TOP8）</div>
+      <div class="bar-chart">
+        ${topSits.length === 0
+          ? '<div style="font-size:11px;color:var(--ink-light)">シチュエーションタグの記録がありません</div>'
+          : topSits.map(([s,c])=>`
+        <div class="bar-row">
+          <div class="bar-label">${e(s)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(c/maxSit)*100}%"></div></div>
+          <div class="bar-val">${c}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="stat-card-full">
+      <div class="stat-title">射精量推移（直近${recent.length}件）</div>
+      <div class="line-chart">
+        <svg class="lc-svg" viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="none">
+          <line x1="0" y1="${svgH}" x2="${svgW}" y2="${svgH}" stroke="#c8bfa8" stroke-width="1"/>
+          ${[1,2,3,4,5].map(v=>`<line x1="0" y1="${svgH-((v-1)/4)*svgH}" x2="${svgW}" y2="${svgH-((v-1)/4)*svgH}" stroke="#e0d8cc" stroke-width="1" stroke-dasharray="4,4"/>`).join('')}
+          ${linePoints.length > 1 ? `<polyline points="${ptStr}" fill="none" stroke="var(--blue-ink)" stroke-width="2"/>` : ''}
+          ${linePoints.map((pt,i)=>{
+            const x=(i/(Math.max(linePoints.length-1,1)))*svgW;
+            const y=svgH-((pt.y-1)/4)*svgH;
+            return `<circle cx="${x}" cy="${y}" r="3" fill="var(--blue-ink)"/>`;
+          }).join('')}
+        </svg>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        ${volOrder.map(v=>`<span class="vol-badge ${v.includes('多')?'vol-hi':v==='普通'?'vol-md':'vol-lo'}">${v}: ${volCount[v]||0}件</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="stat-card-full" style="padding:0;">
+      <div class="mel-advice">
+        <div class="mel-advice-hdr"><span style="font-size:20px">🌸</span><span class="mel-advice-name">夜空メルの統計コメント＆指南</span></div>
+        ${S.statsComment
+          ? `<div class="mel-advice-text">${e(S.statsComment)}</div>`
+          : `<div style="font-size:12px;color:#c0517a;opacity:.7;">ボタンを押すとメルがあなたの記録を分析してコメントします♪</div>`}
+        ${S.statsError ? `<div style="color:var(--red);font-size:11px;margin-top:8px;">⚠ ${e(S.statsError)}</div>` : ''}
+      </div>
+      <div class="sa" style="background:transparent;border-top:1px solid #f8aac8;">
+        <button class="sb" style="background:#c0517a;" ${S.statsLoading?'disabled':''} onclick="getStatsComment()">
+          ${S.statsLoading ? '分析中…' : '🌸 メルに分析してもらう'}
+        </button>
+      </div>
+    </div>
+  </div>`;
 }
 
 // ============================================================
 //  Actions
 // ============================================================
-// ============================================================
-//  Actions
-// ============================================================
-function set(k,v){S[k]=v;render();}
-function setOna(v){S.onahole=v;if(v==='使用なし')S.onaholeName='';render();}
-function tChar(id){if(S.chars.has(id)){if(S.chars.size>1)S.chars.delete(id);}else S.chars.add(id);render();}
-function tSet(k,v){if(S[k].has(v))S[k].delete(v);else S[k].add(v);render();}
-function tHist(){S.histOpen=!S.histOpen;render();}
-function del(i){S.records.splice(i,1);localStorage.setItem('hr',JSON.stringify(S.records));render();}
+function set(k,v){ S[k]=v; render(); }
+function setOna(v){ S.onahole=v; if(v==='使用なし') S.onaholeName=''; render(); }
+function tChar(id){ if(S.chars.has(id)){ if(S.chars.size>1) S.chars.delete(id); } else S.chars.add(id); render(); }
+function tSet(k,v){ if(S[k].has(v)) S[k].delete(v); else S[k].add(v); render(); }
+function setTab(t){ S.tab=t; S.error=''; S.responses=[]; render(); }
+function tHist(){ S.histOpen=!S.histOpen; render(); }
+function tDiagHist(){ S.diagHistOpen=!S.diagHistOpen; render(); }
+function delRecord(i){ S.records.splice(i,1); localStorage.setItem('hr',JSON.stringify(S.records)); render(); }
 
-async function submit(){
-  S.error='';S.responses=[];
-  const active=CHARS.filter(c=>S.chars.has(c.id));
-  if(!active.length){S.error='最低1人のキャラクターを選択してください';render();return;}
-  const num=Math.floor(Math.random()*active.length)+1;
-  const sel=[...active].sort(()=>Math.random()-.5).slice(0,num);
-  const data={method:S.method,onahole:S.onahole,onaholeName:S.onaholeName,duration:S.duration,
-    sits:S.sits,meds:S.meds,sat:S.sat,vol:S.vol,interval:S.interval,memo:S.memo};
-  S.loading=true;render();
-  try{
-    const res=await Promise.all(sel.map(async c=>({...c,comment:await callAPI(c,data)})));
-    S.responses=res;S.loading=false;
-    S.records.unshift({...data,sits:[...data.sits],meds:[...data.meds],
+// ── カルテ送信 ──
+async function submitKarte() {
+  S.error=''; S.responses=[];
+  const active = CHARS.filter(c=>S.chars.has(c.id));
+  if (!active.length){ S.error='最低1人のキャラクターを選択してください'; render(); return; }
+  const num = Math.floor(Math.random()*active.length)+1;
+  const sel = [...active].sort(()=>Math.random()-.5).slice(0,num);
+  const data = {
+    method:S.method, onahole:S.onahole, onaholeName:S.onaholeName, duration:S.duration,
+    sits:S.sits, meds:S.meds, sat:S.sat, vol:S.vol, interval:S.interval, memo:S.memo
+  };
+  S.loading=true; render();
+  try {
+    const sit = [...data.sits].join('、')||'特になし';
+    const med = [...data.meds].join('、')||'特になし';
+    const res = await Promise.all(sel.map(async c => {
+      const msg = `以下の患者の自慰記録に対してキャラクターとして3〜5文でコメントしてください。\n実施方法：${data.method||'未記入'}\nオナホ：${data.onahole}${data.onaholeName?`（${data.onaholeName}）`:''}\n所要時間：${data.duration}分\nシチュエーション：${sit}\nメディア：${med}\n満足度：${data.sat||'未評価'}\n射精量：${data.vol||'未評価'}\n前回からの経過：${data.interval}時間\n特記事項：${data.memo||'なし'}\nセリフのみ回答：`;
+      const comment = await callAPI(c.sys, msg);
+      return {...c, comment};
+    }));
+    S.responses=res; S.loading=false;
+    S.records.unshift({...data, sits:[...data.sits], meds:[...data.meds],
       timestamp:new Date().toISOString(),
       comments:res.map(r=>({name:r.name,comment:r.comment}))});
-    localStorage.setItem('hr',JSON.stringify(S.records.slice(0,100)));
+    localStorage.setItem('hr', JSON.stringify(S.records.slice(0,500)));
     render();
     setTimeout(()=>document.querySelector('.rw')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
-  }catch(err){S.loading=false;S.error=err.message;render();}
+  } catch(err){ S.loading=false; S.error=err.message; render(); }
 }
 
-// textarea は render のたびに再生成するとフォーカスが外れるため
-// render 後に一度だけ input リスナーをアタッチし、以降は S.memo を直接更新する
-function attachListeners(){
-  const memo=document.getElementById('memo-input');
-  if(memo && !memo._attached){
-    memo._attached=true;
-    memo.addEventListener('input',()=>{ S.memo=memo.value; });
+// ── 診断 ──
+function startDiag(){ S.diagStep=1; S.diagAnswers={}; S.diagError=''; render(); }
+function diagBack(){ if(S.diagStep>1){ S.diagStep--; render(); } }
+
+function selectDiagOpt(qid, idx) {
+  if (!S.diagAnswers[qid]) S.diagAnswers[qid] = {};
+  S.diagAnswers[qid].optIdx = idx;
+  // フリーテキスト保持
+  const freeEl = document.getElementById('diag-free-input');
+  if (freeEl) S.diagAnswers[qid].free = freeEl.value;
+  render();
+}
+
+async function diagNext() {
+  const freeEl = document.getElementById('diag-free-input');
+  const q = DIAG_QUESTIONS[S.diagStep-1];
+  if (freeEl && q) {
+    if (!S.diagAnswers[q.id]) S.diagAnswers[q.id] = {};
+    S.diagAnswers[q.id].free = freeEl.value;
   }
+  if (S.diagStep < DIAG_QUESTIONS.length) {
+    S.diagStep++;
+    render();
+  } else {
+    // 診断実行
+    const {type, scores} = calcMazoType(S.diagAnswers);
+    S.diagStep = DIAG_QUESTIONS.length + 1;
+    S.diagLoading = true;
+    render();
+    try {
+      // 過去診断参考データ
+      const pastRef = S.diagResults.length > 0
+        ? `\n過去の診断結果（参考）：${S.diagResults.slice(0,3).map(r=>r.type).join('、')}` : '';
+      // 自由記述まとめ
+      const freeTexts = DIAG_QUESTIONS.map(q2 => {
+        const a = S.diagAnswers[q2.id];
+        return a?.free ? `${q2.text}への補足：${a.free}` : '';
+      }).filter(Boolean).join('\n');
+      const msg = `患者のマゾ診断結果は「${type}」です。${pastRef}\n\n各質問の回答：\n${DIAG_QUESTIONS.map(q2=>{const a=S.diagAnswers[q2.id];return a?.optIdx!==undefined?`${q2.text}→${q2.opts[a.optIdx]}`:'';}).filter(Boolean).join('\n')}\n\n${freeTexts}\n\n診断結果についてキャラクターとして3〜6文で深く洞察してコメントしてください。過去の診断との比較があれば言及し、今後の性的探求への具体的アドバイスも含めてください。セリフのみ回答：`;
+      const aiComment = await callAPI(CHARS[0].sys, msg);
+      const result = {type, scores, aiComment, answers:S.diagAnswers, timestamp:new Date().toISOString()};
+      S.diagResults.unshift(result);
+      localStorage.setItem('dr', JSON.stringify(S.diagResults.slice(0,50)));
+    } catch(err){ S.diagError = err.message; }
+    S.diagLoading = false;
+    render();
+    setTimeout(()=>document.querySelector('.diag-result')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+  }
+}
+
+// ── 統計コメント ──
+async function getStatsComment() {
+  S.statsLoading=true; S.statsError=''; render();
+  try {
+    const records = S.records;
+    const sitCount = {};
+    records.forEach(r=>(r.sits||[]).forEach(s=>{sitCount[s]=(sitCount[s]||0)+1;}));
+    const topSits = Object.entries(sitCount).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([s,c])=>`${s}(${c}回)`).join('、');
+    const volCount = {}; records.forEach(r=>{if(r.vol)volCount[r.vol]=(volCount[r.vol]||0)+1;});
+    const volSummary = Object.entries(volCount).map(([v,c])=>`${v}:${c}件`).join('、');
+    const satCount = {}; records.forEach(r=>{if(r.sat)satCount[r.sat]=(satCount[r.sat]||0)+1;});
+    const latestDiag = S.diagResults[0];
+    const diagRef = latestDiag ? `\n最新マゾ診断タイプ：${latestDiag.type}` : '';
+    const msg = `患者の自慰記録統計です。${diagRef}\n総記録数：${records.length}件\n人気シチュエーション：${topSits||'なし'}\n射精量分布：${volSummary||'なし'}\n\nこの統計データとマゾ診断を照らし合わせて、患者の性的嗜好の傾向を分析し、今後のオナニーの指南・アドバイスを5〜8文で行ってください。具体的なシチュエーション提案も含めてください。セリフのみ回答：`;
+    S.statsComment = await callAPI(CHARS[0].sys, msg);
+  } catch(err){ S.statsError=err.message; }
+  S.statsLoading=false; render();
 }
 
 // ============================================================
 //  起動
 // ============================================================
-setInterval(() => {
+setInterval(()=>{
   const el = document.getElementById('dt');
-  if (el) el.textContent = now().time;
+  if(el) el.textContent = now().time;
 }, 1000);
 
 render();
