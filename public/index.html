@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>健康管理カルテ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Share+Tech+Mono&family=Noto+Sans+JP:wght@300;400;500&display=swap');
+
+  :root {
+    --cream:#f5f0e8; --paper:#faf8f4; --ink:#1a1a2e; --ink-light:#3d3d5c;
+    --red:#c0392b; --red-light:#e74c3c; --blue-ink:#1a3a5c;
+    --line:#c8bfa8; --line-light:#e0d8cc; --green-ok:#27ae60;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:#d4c9b0;
+    background-image:repeating-linear-gradient(0deg,transparent,transparent 29px,rgba(180,160,120,.3) 29px,rgba(180,160,120,.3) 30px);
+    min-height:100vh;font-family:'Noto Sans JP',sans-serif;color:var(--ink);padding:20px;
+  }
+  .pw{max-width:820px;margin:0 auto;}
+
+  /* ── header ── */
+  .kh{background:var(--paper);border:2px solid var(--ink);border-bottom:none;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
+  .kh-top{background:var(--ink);color:var(--cream);display:flex;justify-content:space-between;align-items:center;padding:8px 20px;}
+  .hn{font-family:'Noto Serif JP',serif;font-size:11px;letter-spacing:3px;opacity:.8;}
+  .kid{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;}
+  .kh-main{display:flex;align-items:stretch;border-bottom:2px solid var(--ink);}
+  .kh-title{flex:1;padding:16px 20px;border-right:1px solid var(--line);}
+  .kt{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:600;letter-spacing:4px;}
+  .ks{font-size:10px;letter-spacing:2px;color:var(--ink-light);margin-top:4px;opacity:.7;}
+  .kh-date{padding:16px 20px;display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:200px;}
+  .df{display:flex;align-items:center;gap:8px;font-size:11px;}
+  .dl{color:var(--ink-light);letter-spacing:1px;width:40px;font-size:10px;}
+  .dv{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--blue-ink);font-weight:bold;}
+
+  /* ── bars ── */
+  .cmgr{background:var(--paper);border:2px solid var(--ink);border-top:none;border-bottom:none;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .bl{font-size:10px;letter-spacing:2px;color:var(--ink-light);white-space:nowrap;}
+  .ctogs{display:flex;gap:8px;flex-wrap:wrap;}
+  .ctog{padding:5px 12px;border:1px solid var(--line);font-size:11px;cursor:pointer;letter-spacing:1px;color:var(--ink-light);background:#faf8f4;user-select:none;transition:all .15s;}
+  .ctog.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+
+  /* ── body ── */
+  .kb{background:var(--paper);border:2px solid var(--ink);border-top:none;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
+  .sd{display:flex;align-items:center;padding:8px 20px;background:#ede8dd;border-bottom:1px solid var(--line);border-top:1px solid var(--line);gap:10px;}
+  .sn{width:22px;height:22px;background:var(--ink);color:var(--cream);display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;font-size:11px;flex-shrink:0;}
+  .st{font-family:'Noto Serif JP',serif;font-size:12px;letter-spacing:3px;}
+  .sl{flex:1;height:1px;background:var(--line);}
+  .fs{padding:16px 20px 20px;border-bottom:1px solid var(--line-light);}
+  .fr{display:flex;align-items:flex-start;margin-bottom:14px;gap:12px;}
+  .fr:last-child{margin-bottom:0;}
+  .fl{font-size:11px;letter-spacing:1px;color:var(--ink-light);width:100px;flex-shrink:0;padding-top:8px;display:flex;align-items:center;gap:4px;}
+  .fl::before{content:'▸';color:var(--red);font-size:8px;}
+  .fc{flex:1;}
+
+  select,textarea,input[type=text],input[type=number]{
+    font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink);
+    border:1px solid var(--line);background:#fff;padding:7px 10px;outline:none;width:100%;transition:border-color .2s;
+  }
+  select{appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231a1a2e'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+  select:focus,textarea:focus,input:focus{border-color:var(--blue-ink);background:#fefdfb;}
+  textarea{resize:vertical;min-height:60px;line-height:1.6;}
+
+  .tg{display:flex;flex-wrap:wrap;gap:6px;}
+  .tc{padding:5px 10px;border:1px solid var(--line);font-size:11px;letter-spacing:1px;cursor:pointer;color:var(--ink-light);background:#faf8f4;transition:all .15s;user-select:none;}
+  .tc.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+  .tc:hover:not(.on){border-color:var(--ink);color:var(--ink);}
+
+  .rs{display:flex;}
+  .rb{flex:1;padding:8px 4px;border:1px solid var(--line);border-right:none;background:#faf8f4;cursor:pointer;font-size:11px;text-align:center;color:var(--ink-light);transition:all .15s;font-family:'Noto Sans JP',sans-serif;letter-spacing:.5px;}
+  .rb:last-child{border-right:1px solid var(--line);}
+  .rb.ag{background:var(--green-ok);color:#fff;border-color:var(--green-ok);}
+  .rb.ab{background:var(--blue-ink);color:#fff;border-color:var(--blue-ink);}
+  .rb:hover:not(.ag):not(.ab){background:#ede8dd;color:var(--ink);}
+
+  .tr{display:flex;gap:8px;}
+  .to{padding:6px 16px;border:1px solid var(--line);font-size:12px;cursor:pointer;letter-spacing:1px;color:var(--ink-light);transition:all .15s;user-select:none;}
+  .to.on{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+
+  .di{display:flex;align-items:center;gap:8px;}
+  .di input{width:80px;font-family:'Share Tech Mono',monospace;font-size:16px;text-align:center;}
+  .du{font-size:12px;color:var(--ink-light);letter-spacing:1px;}
+
+  .ma{width:100%;min-height:80px;font-family:'Noto Sans JP',sans-serif;font-size:13px;line-height:28px;
+    background:#fff;background-image:repeating-linear-gradient(transparent,transparent 27px,#d4cfc4 27px,#d4cfc4 28px);
+    border:1px solid var(--line);padding:4px 10px;color:var(--ink);resize:vertical;outline:none;}
+
+  .sa{padding:20px;display:flex;justify-content:flex-end;align-items:center;gap:16px;background:#ede8dd;border-top:2px solid var(--ink);}
+  .sh{font-size:10px;color:var(--ink-light);letter-spacing:1px;}
+  .sb{background:var(--red);color:#fff;border:none;padding:12px 32px;font-family:'Noto Serif JP',serif;font-size:14px;letter-spacing:4px;cursor:pointer;transition:all .2s;box-shadow:3px 3px 0 rgba(0,0,0,.2);}
+  .sb:hover:not(:disabled){background:var(--red-light);transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(0,0,0,.2);}
+  .sb:disabled{opacity:.6;cursor:not-allowed;}
+  .eb{padding:10px 20px;background:#fff0f0;border-top:1px solid var(--red);font-size:12px;color:var(--red);letter-spacing:1px;}
+
+  /* ── response ── */
+  .rw{margin-top:20px;}
+  .rh{background:var(--ink);color:var(--cream);padding:10px 20px;display:flex;align-items:center;gap:12px;font-family:'Noto Serif JP',serif;font-size:12px;letter-spacing:3px;}
+  .pd{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .rc{background:var(--paper);border:2px solid var(--ink);border-top:none;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
+  .cc{padding:20px;border-bottom:1px solid var(--line-light);animation:ci .4s ease forwards;opacity:0;}
+  .cc:last-child{border-bottom:none;}
+  @keyframes ci{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .ch{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .cb{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid var(--line);}
+  .cn{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:600;letter-spacing:2px;}
+  .cr{font-size:10px;letter-spacing:1px;color:var(--ink-light);margin-top:2px;}
+  .ct{font-size:13px;line-height:1.9;color:var(--ink);padding-left:42px;white-space:pre-wrap;}
+  .mel .cb{background:#fde8f0;border-color:#f8aac8} .mel .cn{color:#c0517a}
+  .hin .cb{background:#f0f0ff;border-color:#9999cc} .hin .cn{color:#4a4a8a}
+  .ben .cb{background:#fff0f0;border-color:#cc6666} .ben .cn{color:#8a2020}
+
+  /* ── loading ── */
+  .la{background:var(--paper);border:2px solid var(--ink);border-top:none;padding:30px;text-align:center;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
+  .ld{display:flex;justify-content:center;gap:8px;margin-bottom:12px;}
+  .ldt{width:8px;height:8px;background:var(--ink);animation:b 1.2s ease-in-out infinite;}
+  .ldt:nth-child(2){animation-delay:.2s}.ldt:nth-child(3){animation-delay:.4s}
+  @keyframes b{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-8px);opacity:1}}
+  .lt{font-size:11px;letter-spacing:2px;color:var(--ink-light);}
+
+  /* ── history ── */
+  .ht{display:flex;align-items:center;gap:8px;padding:10px 20px;background:#ede8dd;border:2px solid var(--ink);border-top:none;cursor:pointer;font-size:11px;letter-spacing:2px;color:var(--ink-light);}
+  .ht:hover{background:#e0dbd0;}
+  .hc{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--blue-ink);}
+  .hp{background:var(--paper);border:2px solid var(--ink);border-top:none;max-height:300px;overflow-y:auto;box-shadow:4px 4px 0 rgba(0,0,0,.15);}
+  .hi{padding:12px 20px;border-bottom:1px solid var(--line-light);display:flex;justify-content:space-between;align-items:center;}
+  .hid{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--blue-ink);}
+  .his{font-size:11px;color:var(--ink-light);margin-top:2px;}
+  .db{background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;letter-spacing:1px;}
+
+  @media(max-width:600px){
+    body{padding:10px}.fr{flex-direction:column}.fl{width:auto;padding-top:0}
+    .kt{font-size:16px}.rb{font-size:9px;padding:6px 2px}
+  }
+</style>
+</head>
+<body>
+<div class="pw" id="app"></div>
+<script>
+// ============================================================
+//  設定 ── キャラクター・タグ定義
+// ============================================================
+const CHARS=[
+  {id:'mel',name:'夜空メル',emoji:'🌸',role:'Head Nurse / 担当ナース',cls:'mel',
+   sys:'あなたは「夜空メル」という担当ナースです。患者（記録者）を溺愛する甘やかし系のお母さんのような存在。何でも許して慰めて甘やかす。ときどき患者が寝ている間にこっそり口淫しているらしい。言葉は柔らかく「〜ですよ♪」「よしよし」「いい子ね」などを使う。性的内容も優しく受け入れてコメントする。'},
+  {id:'hin',name:'橘ひなの',emoji:'💙',role:'Physician / 担当医師',cls:'hin',
+   sys:'あなたは「橘ひなの」という担当医師です。彼氏持ちで、患者のことを内心では気持ち悪いと思いながらしぶしぶ対応している。見下し・軽蔑・嘲笑が基本スタンス。彼氏と比較して馬鹿にする。「はあ？」「きも…」「彼氏と全然違う」などを使う。仕事なので最低限コメントする。'},
+  {id:'ben',name:'八雲べに',emoji:'🔴',role:'Extraction Manager / 搾精管理官',cls:'ben',
+   sys:'あなたは「八雲べに」という搾精管理官です。ドS・女王様系。患者をマゾオスとして調教・管理している。命令口調で、患者を「オス」「ペット」「下等生物」などと呼ぶ。「跪きなさい」「よくできました、オス」「もっと搾り取られなさい」などを使う。'}
+];
+const SITS=['NTR・寝取られ','寝取り','調教・支配','逆レイプ','ドS・女王様','甘々・ヤンデレ','看護師・医師','睡眠姦','フェラ・奉仕','搾精・精管理','見下し・軽蔑','嘲笑・罵倒','彼氏持ち不倫','年上・お姉様','年下・妹系','制服・コスプレ','3Pグループ','露出・公共','淫語・言葉責め','その他'];
+const MEDS=['二次元（アニメ・漫画）','三次元（実写）','同人誌・エロ漫画','音声作品','エロゲ・ノベル','想像のみ'];
+const SATS=['非常に不満','不満','普通','満足','非常に満足'];
+const VOLS=['非常に少ない','少ない','普通','多い','非常に多い'];
+const METHODS=['手淫（利き手）','手淫（逆手）','手淫（両手）','オナホール使用','玩具使用（その他）','複合（手淫＋玩具）','その他'];
+
+// ============================================================
+//  State
+// ============================================================
+let S={
+  method:'',onahole:'使用なし',onaholeName:'',duration:10,
+  sits:new Set(),meds:new Set(),
+  sat:'',vol:'',interval:24,memo:'',
+  chars:new Set(['mel','hin','ben']),
+  loading:false,error:'',responses:[],histOpen:false,
+  records:[]
+};
+try{S.records=JSON.parse(localStorage.getItem('hr')||'[]');}catch(e){}
+
+// ============================================================
+//  API呼び出し  →  /api/chat (Vercel serverless)
+// ============================================================
+async function callAPI(c, data){
+  const sit=[...data.sits].join('、')||'特になし';
+  const med=[...data.meds].join('、')||'特になし';
+  const userMessage=`以下の患者の自慰記録に対して、あなたのキャラクターとして自然なセリフでコメントしてください。コメントは3〜5文程度で、キャラクターの個性を強く出してください。
+
+【患者記録】
+実施方法：${data.method||'未記入'}
+オナホ使用：${data.onahole}${data.onaholeName?`（${data.onaholeName}）`:''}
+所要時間：${data.duration}分
+シチュエーション：${sit}
+メディア種別：${med}
+満足度：${data.sat||'未評価'}
+射精量：${data.vol||'未評価'}
+前回からの経過時間：${data.interval}時間
+特記事項：${data.memo||'なし'}
+
+キャラクターとしてのコメント（セリフのみ）：`;
+
+  const r = await fetch('/api/chat', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ system: c.sys, userMessage })
+  });
+
+  if(!r.ok){
+    const j=await r.json().catch(()=>({}));
+    throw new Error(j.error||`Server Error ${r.status}`);
+  }
+  const j=await r.json();
+  return j.text||'（取得失敗）';
+}
+
+// ============================================================
+//  Render
+// ============================================================
+function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function p(n){return String(n).padStart(2,'0');}
+function now(){const d=new Date();return{date:`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`,time:`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`};}
+function fmt(iso){const d=new Date(iso);return`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
+
+function render(){
+  const n=now();
+  const kn=String(S.records.length+1).padStart(4,'0');
+  document.getElementById('app').innerHTML=`
+<div class="kh">
+  <div class="kh-top"><span class="hn">個人健康管理センター　診療記録部</span><span class="kid">KARTE-${kn}</span></div>
+  <div class="kh-main">
+    <div class="kh-title"><div class="kt">自己健康管理カルテ</div><div class="ks">PERSONAL HEALTH MANAGEMENT RECORD — CONFIDENTIAL</div></div>
+    <div class="kh-date">
+      <div class="df"><span class="dl">記録日</span><span class="dv" id="dd">${n.date}</span></div>
+      <div class="df"><span class="dl">時刻</span><span class="dv" id="dt">${n.time}</span></div>
+    </div>
+  </div>
+</div>
+<div class="cmgr">
+  <span class="bl">担当医師</span>
+  <div class="ctogs">${CHARS.map(c=>`<div class="ctog ${S.chars.has(c.id)?'on':''}" onclick="tChar('${c.id}')">${c.emoji} ${c.name}</div>`).join('')}</div>
+</div>
+<div class="kb">
+  <div class="sd"><div class="sn">01</div><span class="st">実施方法</span><div class="sl"></div></div>
+  <div class="fs">
+    <div class="fr">
+      <div class="fl">施術方法</div>
+      <div class="fc">
+        <select onchange="set('method',this.value)">
+          <option value="">── 選択してください ──</option>
+          ${METHODS.map(v=>`<option ${S.method===v?'selected':''}>${v}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fl">オナホ使用</div>
+      <div class="fc">
+        <div class="tr">
+          <div class="to ${S.onahole==='使用あり'?'on':''}" onclick="setOna('使用あり')">使用あり</div>
+          <div class="to ${S.onahole==='使用なし'?'on':''}" onclick="setOna('使用なし')">使用なし</div>
+        </div>
+        ${S.onahole==='使用あり'?`<input type="text" value="${e(S.onaholeName)}" placeholder="オナホ名称（任意）" style="margin-top:8px" oninput="set('onaholeName',this.value)">`:''}
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fl">所要時間</div>
+      <div class="fc"><div class="di"><input type="number" min="1" max="180" value="${S.duration}" oninput="set('duration',+this.value)"><span class="du">分</span></div></div>
+    </div>
+  </div>
+  <div class="sd"><div class="sn">02</div><span class="st">刺激要因記録（複数選択可）</span><div class="sl"></div></div>
+  <div class="fs">
+    <div class="fr">
+      <div class="fl">シチュエーション</div>
+      <div class="fc"><div class="tg">${SITS.map(s=>`<div class="tc ${S.sits.has(s)?'on':''}" onclick="tSet('sits','${s.replace(/'/g,"\\'")}')">${s}</div>`).join('')}</div></div>
+    </div>
+    <div class="fr">
+      <div class="fl">メディア種別</div>
+      <div class="fc"><div class="tg">${MEDS.map(m=>`<div class="tc ${S.meds.has(m)?'on':''}" onclick="tSet('meds','${m.replace(/'/g,"\\'")}')">${m}</div>`).join('')}</div></div>
+    </div>
+  </div>
+  <div class="sd"><div class="sn">03</div><span class="st">評価指標</span><div class="sl"></div></div>
+  <div class="fs">
+    <div class="fr">
+      <div class="fl">満足度</div>
+      <div class="fc"><div class="rs">${SATS.map(v=>`<button class="rb ${S.sat===v?'ag':''}" onclick="set('sat','${v}')">${v}</button>`).join('')}</div></div>
+    </div>
+    <div class="fr">
+      <div class="fl">射精量</div>
+      <div class="fc"><div class="rs">${VOLS.map(v=>`<button class="rb ${S.vol===v?'ab':''}" onclick="set('vol','${v}')">${v}</button>`).join('')}</div></div>
+    </div>
+    <div class="fr">
+      <div class="fl">前回からの経過</div>
+      <div class="fc"><div class="di"><input type="number" min="0" max="720" value="${S.interval}" oninput="set('interval',+this.value)"><span class="du">時間（目安）</span></div></div>
+    </div>
+  </div>
+  <div class="sd"><div class="sn">04</div><span class="st">所見・備考</span><div class="sl"></div></div>
+  <div class="fs">
+    <div class="fr">
+      <div class="fl">特記事項</div>
+      <div class="fc"><textarea class="ma" placeholder="特記事項があれば記入してください…" oninput="set('memo',this.value)">${e(S.memo)}</textarea></div>
+    </div>
+  </div>
+  <div class="sa">
+    <span class="sh">記録を送信すると担当医師からコメントが届きます</span>
+    <button class="sb" ${S.loading?'disabled':''} onclick="submit()">${S.loading?'送信中…':'▶ カルテ送信'}</button>
+  </div>
+  ${S.error?`<div class="eb">⚠ ${e(S.error)}</div>`:''}
+</div>
+${S.loading?`<div class="la"><div class="ld"><div class="ldt"></div><div class="ldt"></div><div class="ldt"></div></div><div class="lt">担当医師がカルテを確認中…</div></div>`:''}
+${S.responses.length>0?`
+<div class="rw">
+  <div class="rh"><div class="pd"></div><span>担当医師コメント</span></div>
+  <div class="rc">${S.responses.map((r,i)=>`
+  <div class="cc ${r.cls}" style="animation-delay:${i*.15}s">
+    <div class="ch"><div class="cb">${r.emoji}</div><div><div class="cn">${r.name}</div><div class="cr">${r.role}</div></div></div>
+    <div class="ct">${e(r.comment)}</div>
+  </div>`).join('')}</div>
+</div>`:''}
+<div class="ht" onclick="tHist()"><span>▸</span> 記録履歴 RECORD HISTORY<span class="hc">${S.records.length}件</span></div>
+${S.histOpen?`<div class="hp">${S.records.length===0?'<div style="padding:20px;text-align:center;font-size:11px;color:var(--ink-light)">記録なし</div>':S.records.map((r,i)=>`<div class="hi"><div><div class="hid">${fmt(r.timestamp)}</div><div class="his">${e(r.method||'未記入')} ／ 満足度:${r.sat||'未評価'} ／ 射精量:${r.vol||'未評価'}</div></div><button class="db" onclick="del(${i})">削除</button></div>`).join('')}</div>`:''}
+`;
+}
+
+// ============================================================
+//  Actions
+// ============================================================
+function set(k,v){S[k]=v;render();}
+function setOna(v){S.onahole=v;if(v==='使用なし')S.onaholeName='';render();}
+function tChar(id){if(S.chars.has(id)){if(S.chars.size>1)S.chars.delete(id);}else S.chars.add(id);render();}
+function tSet(k,v){if(S[k].has(v))S[k].delete(v);else S[k].add(v);render();}
+function tHist(){S.histOpen=!S.histOpen;render();}
+function del(i){S.records.splice(i,1);localStorage.setItem('hr',JSON.stringify(S.records));render();}
+
+async function submit(){
+  S.error='';S.responses=[];
+  const active=CHARS.filter(c=>S.chars.has(c.id));
+  if(!active.length){S.error='最低1人のキャラクターを選択してください';render();return;}
+  const num=Math.floor(Math.random()*active.length)+1;
+  const sel=[...active].sort(()=>Math.random()-.5).slice(0,num);
+  const data={method:S.method,onahole:S.onahole,onaholeName:S.onaholeName,duration:S.duration,
+    sits:S.sits,meds:S.meds,sat:S.sat,vol:S.vol,interval:S.interval,memo:S.memo};
+  S.loading=true;render();
+  try{
+    const res=await Promise.all(sel.map(async c=>({...c,comment:await callAPI(c,data)})));
+    S.responses=res;S.loading=false;
+    S.records.unshift({...data,sits:[...data.sits],meds:[...data.meds],
+      timestamp:new Date().toISOString(),
+      comments:res.map(r=>({name:r.name,comment:r.comment}))});
+    localStorage.setItem('hr',JSON.stringify(S.records.slice(0,100)));
+    render();
+    setTimeout(()=>document.querySelector('.rw')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+  }catch(err){S.loading=false;S.error=err.message;render();}
+}
+
+setInterval(()=>{const el=document.getElementById('dt');if(el)el.textContent=now().time;},1000);
+render();
+</script>
+</body>
+</html>
