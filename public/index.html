@@ -255,7 +255,7 @@ function render(){
     </div>
     <div class="fr">
       <div class="fl">所要時間</div>
-      <div class="fc"><div class="di"><input type="number" min="1" max="180" value="${S.duration}" oninput="set('duration',+this.value)"><span class="du">分</span></div></div>
+      <div class="fc"><div class="di"><input type="number" id="dur-input" min="0.1" max="180" step="0.1" value="${S.duration}" onchange="set('duration',+this.value)"><span class="du">分　（0.1 = 6秒）</span></div></div>
     </div>
   </div>
   <div class="sd"><div class="sn">02</div><span class="st">刺激要因記録（複数選択可）</span><div class="sl"></div></div>
@@ -288,7 +288,7 @@ function render(){
   <div class="fs">
     <div class="fr">
       <div class="fl">特記事項</div>
-      <div class="fc"><textarea class="ma" placeholder="特記事項があれば記入してください…" oninput="set('memo',this.value)">${e(S.memo)}</textarea></div>
+      <div class="fc"><textarea id="memo-input" class="ma" placeholder="特記事項があれば記入してください…">${e(S.memo)}</textarea></div>
     </div>
   </div>
   <div class="sa">
@@ -341,6 +341,25 @@ async function submit(){
     render();
     setTimeout(()=>document.querySelector('.rw')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
   }catch(err){S.loading=false;S.error=err.message;render();}
+}
+
+// textarea は render のたびに再生成するとフォーカスが外れるため
+// render 後に一度だけ input リスナーをアタッチし、以降は S.memo を直接更新する
+function attachListeners(){
+  const memo=document.getElementById('memo-input');
+  if(memo && !memo._attached){
+    memo._attached=true;
+    memo.addEventListener('input',()=>{ S.memo=memo.value; });
+  }
+}
+
+// render をラップ：textarea の値を保存→再描画→リスナー再アタッチ
+const _origRender=render;
+function render(){
+  const memoEl=document.getElementById('memo-input');
+  if(memoEl) S.memo=memoEl.value;
+  _origRender();
+  attachListeners();
 }
 
 setInterval(()=>{const el=document.getElementById('dt');if(el)el.textContent=now().time;},1000);
