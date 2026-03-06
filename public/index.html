@@ -273,7 +273,7 @@ let S = {
   sat:'', vol:'', interval:24, memo:'',
   chars:new Set(['mel','hin','ben']),
   loading:false, error:'', responses:[],
-  histOpen:false, records:[],
+  histOpen:false, records:[], dbLoading:false,
   // 診断
   diagAnswers:{},  // qid -> {opt, free}
   diagStep:0,      // 0=intro, 1-6=質問, 7=結果
@@ -285,23 +285,52 @@ let S = {
   statsLoading:false, statsComment:'', statsError:'',
 };
 
-// ── ローカルストレージ読み込み ──
-function loadStorage() {
-  try { S.records = JSON.parse(localStorage.getItem('hr') || '[]'); } catch(e){}
-  try { S.diagResults = JSON.parse(localStorage.getItem('dr') || '[]'); } catch(e){}
-  // 3年経過データ削除
-  const THREE_YEARS = 3 * 365 * 24 * 60 * 60 * 1000;
-  const now = Date.now();
-  S.records = S.records.filter(r => now - new Date(r.timestamp).getTime() < THREE_YEARS);
-  S.diagResults = S.diagResults.filter(r => now - new Date(r.timestamp).getTime() < THREE_YEARS);
+// ── Supabase データ読み込み ──
+async function loadFromDB() {
+  S.dbLoading = true; render();
+  try {
+    const [recs, diags] = await Promise.all([
+      fetch('/api/chat?action=records').then(r=>r.json()),
+      fetch('/api/chat?action=diagnoses').then(r=>r.json()),
+    ]);
+    // Supabaseのカラム名→フロント用に変換
+    S.records = (Array.isArray(recs) ? recs : []).map(r => ({
+      id:          r.id,
+      method:      r.method,
+      onahole:     r.onahole,
+      onaholeName: r.onahole_name,
+      duration:    r.duration,
+      sits:        r.sits || [],
+      meds:        r.meds || [],
+      sat:         r.satisfaction,
+      vol:         r.volume,
+      interval:    r.interval_hours,
+      memo:        r.memo,
+      comments:    r.comments || [],
+      timestamp:   r.created_at,
+    }));
+    S.diagResults = (Array.isArray(diags) ? diags : []).map(d => ({
+      id:        d.id,
+      type:      d.type,
+      scores:    d.scores || {},
+      answers:   d.answers || {},
+      aiComment: d.ai_comment,
+      timestamp: d.created_at,
+    }));
+  } catch(err) {
+    console.error('DB load error:', err);
+    // フォールバック：localStorageから読み込み
+    try { S.records = JSON.parse(localStorage.getItem('hr') || '[]'); } catch(e){}
+    try { S.diagResults = JSON.parse(localStorage.getItem('dr') || '[]'); } catch(e){}
+  }
+  S.dbLoading = false; render();
 }
-loadStorage();
 
 // ============================================================
 //  API呼び出し
 // ============================================================
 async function callAPI(system, userMessage) {
-  const r = await fetch('/api/chat', {
+  const r = await fetch('/api/chat?action=chat', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({ system, userMessage })
@@ -312,6 +341,20 @@ async function callAPI(system, userMessage) {
   }
   const j = await r.json();
   return j.text || '（取得失敗）';
+}
+
+// Supabase 保存ヘルパー
+async function dbPost(action, body) {
+  const r = await fetch(`/api/chat?action=${action}`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) {
+    const j = await r.json().catch(()=>({}));
+    throw new Error(j.error || `DB Error ${r.status}`);
+  }
+  return r.json();
 }
 
 // ============================================================
@@ -382,6 +425,14 @@ function render() {
     return age > TWO_YEARS_HALF;
   }).length;
 
+  if (S.dbLoading) {
+    document.getElementById('app').innerHTML = `
+<div class="la" style="border:2px solid var(--ink);border-top:2px solid var(--ink);margin-top:0">
+  <div class="ld"><div class="ldt"></div><div class="ldt"></div><div class="ldt"></div></div>
+  <div class="lt">データベースからデータを読み込み中…</div>
+</div>`;
+    return;
+  }
   document.getElementById('app').innerHTML = `
 <div class="kh">
   <div class="kh-top">
@@ -812,7 +863,14 @@ function tSet(k,v){ if(S[k].has(v)) S[k].delete(v); else S[k].add(v); render(); 
 function setTab(t){ S.tab=t; S.error=''; S.responses=[]; render(); }
 function tHist(){ S.histOpen=!S.histOpen; render(); }
 function tDiagHist(){ S.diagHistOpen=!S.diagHistOpen; render(); }
-function delRecord(i){ S.records.splice(i,1); localStorage.setItem('hr',JSON.stringify(S.records)); render(); }
+async function delRecord(i) {
+  const rec = S.records[i];
+  S.records.splice(i,1); render();
+  if (rec?.id) {
+    try { await dbPost('delete_record', { id: rec.id }); }
+    catch(e) { console.error('DB delete error:', e); }
+  }
+}
 
 // ── カルテ送信 ──
 async function submitKarte() {
@@ -835,10 +893,17 @@ async function submitKarte() {
       return {...c, comment};
     }));
     S.responses=res; S.loading=false;
-    S.records.unshift({...data, sits:[...data.sits], meds:[...data.meds],
-      timestamp:new Date().toISOString(),
-      comments:res.map(r=>({name:r.name,comment:r.comment}))});
-    localStorage.setItem('hr', JSON.stringify(S.records.slice(0,500)));
+    // Supabaseに保存
+    const recordToSave = {...data, sits:[...data.sits], meds:[...data.meds],
+      comments:res.map(r=>({name:r.name,comment:r.comment}))};
+    try {
+      const saved = await dbPost('save_record', { record: recordToSave });
+      S.records.unshift({...recordToSave, id:saved.id, timestamp:saved.created_at||new Date().toISOString()});
+    } catch(e) {
+      // DBエラー時はローカルにフォールバック
+      S.records.unshift({...recordToSave, timestamp:new Date().toISOString()});
+      console.error('DB save error:', e);
+    }
     render();
     setTimeout(()=>document.querySelector('.rw')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
   } catch(err){ S.loading=false; S.error=err.message; render(); }
@@ -885,8 +950,13 @@ async function diagNext() {
       const msg = `患者のマゾ診断結果は「${type}」です。${pastRef}\n\n各質問の回答：\n${DIAG_QUESTIONS.map(q2=>{const a=S.diagAnswers[q2.id];return a?.optIdx!==undefined?`${q2.text}→${q2.opts[a.optIdx]}`:'';}).filter(Boolean).join('\n')}\n\n${freeTexts}\n\n診断結果についてキャラクターとして3〜6文で深く洞察してコメントしてください。過去の診断との比較があれば言及し、今後の性的探求への具体的アドバイスも含めてください。セリフのみ回答：`;
       const aiComment = await callAPI(CHARS[0].sys, msg);
       const result = {type, scores, aiComment, answers:S.diagAnswers, timestamp:new Date().toISOString()};
-      S.diagResults.unshift(result);
-      localStorage.setItem('dr', JSON.stringify(S.diagResults.slice(0,50)));
+      try {
+        const saved = await dbPost('save_diagnosis', { diagnosis: {type, scores, answers:S.diagAnswers, aiComment} });
+        S.diagResults.unshift({...result, id:saved.id, timestamp:saved.created_at||result.timestamp});
+      } catch(e) {
+        S.diagResults.unshift(result);
+        console.error('DB diag save error:', e);
+      }
     } catch(err){ S.diagError = err.message; }
     S.diagLoading = false;
     render();
@@ -921,7 +991,8 @@ setInterval(()=>{
   if(el) el.textContent = now().time;
 }, 1000);
 
-render();
+// 初回はDBからデータ読み込み
+loadFromDB();
 </script>
 </body>
 </html>
