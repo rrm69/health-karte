@@ -1,5 +1,4 @@
-// api/chat.js   E Vercel Serverless Function (CommonJS)
-
+// api/chat.js - Vercel Serverless Function (CommonJS)
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -9,11 +8,11 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
 
   const apiKey = process.env.GROK_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GROK_API_KEY が未設定でぁE });
+  if (!apiKey) return res.status(500).json({ error: 'GROK_API_KEY が未設定です' });
 
   try {
     const { system, userMessage } = req.body;
-    if (!userMessage) return res.status(400).json({ error: 'userMessage は忁E��でぁE });
+    if (!userMessage) return res.status(400).json({ error: 'userMessage は必須です' });
 
     const grokRes = await fetch('https://api.x.ai/v1/chat/completions', {
       method: 'POST',
@@ -40,12 +39,11 @@ module.exports = async function handler(req, res) {
     }
 
     const data = await grokRes.json();
-    const text = data.choices?.[0]?.message?.content ?? '�E�コメント取得失敗！E;
+    const text = data.choices?.[0]?.message?.content ?? '（コメント取得失敗）';
     return res.status(200).json({ text });
 
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: err.message || '冁E��エラー' });
+    return res.status(500).json({ error: err.message || '内部エラー' });
   }
 };
-

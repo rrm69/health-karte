@@ -140,6 +140,9 @@
 <body>
 <div class="pw" id="app"></div>
 <script>
+// ============================================================
+//  データ定義・API
+// ============================================================
 const CHARS=[
   {id:'mel',name:'夜空メル',emoji:'🌸',role:'Head Nurse / 担当ナース',cls:'mel',
    sys:'あなたは「夜空メル」という担当ナースです。患者（記録者）を溺愛する甘やかし系のお母さんのような存在。何でも許して慰めて甘やかす。ときどき患者が寝ている間にこっそり口淫しているらしい。言葉は柔らかく「〜ですよ♪」「よしよし」「いい子ね」などを使う。性的内容も優しく受け入れてコメントする。'},
@@ -202,21 +205,25 @@ async function callAPI(c, data){
   return j.text||'（取得失敗）';
 }
 
-
 // ============================================================
-//  Render helper: textarea リスナー（フォーカス維持）
+//  Render
 // ============================================================
-function attachListeners(){
-  const memo=document.getElementById('memo-input');
-  if(memo && !memo._attached){
-    memo._attached=true;
-    memo.addEventListener('input',()=>{ S.memo=memo.value; });
-  }
-}
+function e(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function p(n){return String(n).padStart(2,'0');}
+function now(){const d=new Date();return{date:`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`,time:`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`};}
+function fmt(iso){const d=new Date(iso);return`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
 
 // ============================================================
 //  Render
 // ============================================================
+// textarea用：renderのたびにDOMが再生成されフォーカスが外れないようリスナーをアタッチ
+function attachListeners(){
+  const memo = document.getElementById('memo-input');
+  if (memo && !memo._attached) {
+    memo._attached = true;
+    memo.addEventListener('input', () => { S.memo = memo.value; });
+  }
+}
 
 function render(){
   const n=now();
@@ -318,7 +325,9 @@ ${S.histOpen?`<div class="hp">${S.records.length===0?'<div style="padding:20px;t
   attachListeners();
 }
 
-
+// ============================================================
+//  Actions
+// ============================================================
 // ============================================================
 //  Actions
 // ============================================================
@@ -350,8 +359,24 @@ async function submit(){
   }catch(err){S.loading=false;S.error=err.message;render();}
 }
 
+// textarea は render のたびに再生成するとフォーカスが外れるため
+// render 後に一度だけ input リスナーをアタッチし、以降は S.memo を直接更新する
+function attachListeners(){
+  const memo=document.getElementById('memo-input');
+  if(memo && !memo._attached){
+    memo._attached=true;
+    memo.addEventListener('input',()=>{ S.memo=memo.value; });
+  }
+}
 
-setInterval(()=>{const el=document.getElementById('dt');if(el)el.textContent=now().time;},1000);
+// ============================================================
+//  起動
+// ============================================================
+setInterval(() => {
+  const el = document.getElementById('dt');
+  if (el) el.textContent = now().time;
+}, 1000);
+
 render();
 </script>
 </body>
