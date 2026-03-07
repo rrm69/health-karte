@@ -251,6 +251,33 @@ const DIAG_QUESTIONS = [
    free:'自分の性質についての考えを自由に記述してください（任意）', axis:'identity'},
 ];
 
+// ── 再診断用質問（2回目以降） ──
+const DIAG_QUESTIONS_REVISIT = [
+  {id:'r1', text:'前回の診断以降、新たに気づいた自分の嗜好はありますか？',
+   opts:['さらに深い支配欲求に気づいた','羞恥への欲求が増した','より強い痛み・苦痛への興味','心理支配への依存が深まった','奉仕・献身欲求が強くなった','変化は特にない'],
+   free:'気づいたことを具体的に記述してください（任意）', axis:'identity'},
+  {id:'r2', text:'最近最も強く反応したコンテンツ・シチュエーションは？',
+   opts:['完全支配・命令系','公開羞恥・晒し系','身体的拘束・苦痛系','心理的追い詰め・洗脳系','NTR・寝取られ系','搾精・管理・奉仕系'],
+   free:'具体的な作品や場面があれば記述してください（任意）', axis:'content'},
+  {id:'r3', text:'理想の「支配者」像として今最も近いのは？',
+   opts:['冷酷で感情のない女王','溺愛しながら管理する母','軽蔑と嘲笑で扱う医師','論理的に洗脳する知性派','激しく責め立てるドS','道具として淡々と使う無関心系'],
+   free:'理想の支配者について詳しく記述してください（任意）', axis:'relation'},
+  {id:'r4', text:'自分のマゾ性質が深化・変化していると感じますか？',
+   opts:['以前より確実に深化している','変化はないが確固たるものになった','揺らいでいる・迷っている','より極端な方向に向かっている','別の嗜好が芽生えてきた','まだ探求中で分からない'],
+   free:'変化についての考えを自由に記述してください（任意）', axis:'identity'},
+  {id:'r5', text:'オナニー中に最も強く意識する「役割」は？',
+   opts:['完全な服従者・奴隷','管理・搾取される対象','羞恥を見られる存在','心理的に支配される者','奉仕に喜びを感じる者','自分自身の解放'],
+   free:'その役割についての感情を記述してください（任意）', axis:'control'},
+  {id:'r6', text:'前回の診断結果と比べて、自己認識はどう変わりましたか？',
+   opts:['より深く受け入れられるようになった','より隠したくなった','客観的に見られるようになった','もっと極めたい欲求が出てきた','疑問や葛藤が増した','あまり変わっていない'],
+   free:'自己認識の変化について記述してください（任意）', axis:'after'},
+];
+
+// 現在の診断セッションで使う質問を返す
+function getCurrentQuestions() {
+  return (S.diagResults.length > 0) ? DIAG_QUESTIONS_REVISIT : DIAG_QUESTIONS;
+}
+
 // ── マゾタイプ定義 ──
 const MAZO_TYPES = {
   'S型服従': {desc:'支配・命令への服従に最大の快楽を見出すタイプ。明確なヒエラルキーの中で自分の位置を確認することで安心感と興奮を得る。八雲べにのような搾精管理官との相性が最高。', color:'#8a2020'},
@@ -370,12 +397,20 @@ function calcMazoType(answers) {
   const scores = {control:0,relation:0,shame:0,after:0,content:0,identity:0};
   // 各質問の回答インデックスを軸スコアに変換
   const axisMap = {
+    // 初回診断
     q1:{0:'control',1:'shame',2:'content',3:'control',4:'relation',5:'relation'},
     q2:{0:'control',1:'relation',2:'relation',3:'relation',4:'content',5:'relation'},
     q3:{0:'shame',1:'shame',2:'identity',3:'control',4:'shame',5:'after'},
     q4:{0:'identity',1:'after',2:'after',3:'content',4:'identity',5:'identity'},
     q5:{0:'content',1:'control',2:'relation',3:'content',4:'relation',5:'content'},
     q6:{0:'identity',1:'identity',2:'after',3:'identity',4:'identity',5:'identity'},
+    // 再診断
+    r1:{0:'control',1:'shame',2:'content',3:'after',4:'relation',5:'identity'},
+    r2:{0:'control',1:'shame',2:'content',3:'after',4:'content',5:'relation'},
+    r3:{0:'control',1:'relation',2:'shame',3:'after',4:'content',5:'relation'},
+    r4:{0:'identity',1:'identity',2:'identity',3:'content',4:'after',5:'identity'},
+    r5:{0:'control',1:'content',2:'shame',3:'after',4:'relation',5:'identity'},
+    r6:{0:'identity',1:'identity',2:'identity',3:'content',4:'after',5:'identity'},
   };
   for (const [qid, ans] of Object.entries(answers)) {
     if (ans && ans.optIdx !== undefined) {
@@ -401,12 +436,33 @@ function attachListeners() {
     memo._attached = true;
     memo.addEventListener('input', () => { S.memo = memo.value; });
   }
+  // オナホ名（再レンダリングせずに値だけ保持）
+  const onaName = document.getElementById('onahole-name-input');
+  if (onaName && !onaName._attached) {
+    onaName._attached = true;
+    onaName.addEventListener('input', () => { S.onaholeName = onaName.value; });
+  }
+  // 所要時間（blur/change時のみ反映）
+  const durEl = document.getElementById('duration-input');
+  if (durEl && !durEl._attached) {
+    durEl._attached = true;
+    durEl.addEventListener('change', () => { S.duration = +durEl.value; });
+    durEl.addEventListener('blur',   () => { S.duration = +durEl.value; });
+  }
+  // 前回からの経過（blur/change時のみ反映）
+  const intEl = document.getElementById('interval-input');
+  if (intEl && !intEl._attached) {
+    intEl._attached = true;
+    intEl.addEventListener('change', () => { S.interval = +intEl.value; });
+    intEl.addEventListener('blur',   () => { S.interval = +intEl.value; });
+  }
   // 診断フリーテキスト
   const freeEl = document.getElementById('diag-free-input');
   if (freeEl && !freeEl._attached) {
     freeEl._attached = true;
     freeEl.addEventListener('input', () => {
-      const q = DIAG_QUESTIONS[S.diagStep - 1];
+      const allQ = getCurrentQuestions();
+      const q = allQ[S.diagStep - 1];
       if (q) {
         if (!S.diagAnswers[q.id]) S.diagAnswers[q.id] = {};
         S.diagAnswers[q.id].free = freeEl.value;
@@ -552,14 +608,14 @@ function renderKarte() {
           <div class="to ${S.onahole==='使用あり'?'on':''}" onclick="setOna('使用あり')">使用あり</div>
           <div class="to ${S.onahole==='使用なし'?'on':''}" onclick="setOna('使用なし')">使用なし</div>
         </div>
-        ${S.onahole==='使用あり'?`<input type="text" value="${e(S.onaholeName)}" placeholder="オナホ名称（任意）" style="margin-top:8px" oninput="set('onaholeName',this.value)">`:''}
+        ${S.onahole==='使用あり'?`<input type="text" id="onahole-name-input" value="${e(S.onaholeName)}" placeholder="オナホ名称（任意）" style="margin-top:8px">`:''}
       </div>
     </div>
     <div class="fr">
       <div class="fl">所要時間</div>
       <div class="fc">
         <div class="di">
-          <input type="number" min="0.1" max="180" step="0.1" value="${S.duration}" onchange="set('duration',+this.value)">
+          <input type="number" id="duration-input" min="0.1" max="180" step="0.1" value="${S.duration}">
           <span class="du">分　（0.1 = 6秒）</span>
         </div>
       </div>
@@ -604,7 +660,7 @@ function renderKarte() {
       <div class="fl">前回からの経過</div>
       <div class="fc">
         <div class="di">
-          <input type="number" min="0" max="720" value="${S.interval}" onchange="set('interval',+this.value)">
+          <input type="number" id="interval-input" min="0" max="720" value="${S.interval}">
           <span class="du">時間（目安）</span>
         </div>
       </div>
@@ -639,8 +695,8 @@ function renderDiag() {
   <div class="sd"><div class="sn">🔬</div><span class="st">マゾ性質診断</span><div class="sl"></div></div>
   <div class="fs" style="padding:24px 20px;">
     <p style="font-size:13px;line-height:1.9;color:var(--ink);margin-bottom:16px;">
-      ${DIAG_QUESTIONS.length}つの質問に回答することで、あなたのマゾ性質タイプを診断します。<br>
-      選択肢から最も近いものを選び、自由記述欄で詳しく補足することもできます。<br>
+      ${getCurrentQuestions().length}つの質問に回答することで、あなたのマゾ性質タイプを診断します。<br>
+      ${S.diagResults.length > 0 ? '再診断では前回以降の変化・深化に焦点を当てた質問を行います。<br>' : ''}選択肢から最も近いものを選び、自由記述欄で詳しく補足することもできます。<br>
       診断は何度でも可能で、過去の診断履歴を参考に深掘り分析も行います。
     </p>
     ${latestDiag ? `
@@ -656,21 +712,22 @@ function renderDiag() {
   </div>`;
   }
 
-  if (S.diagStep > DIAG_QUESTIONS.length) {
+  if (S.diagStep > getCurrentQuestions().length) {
     // 結果表示
     return renderDiagResult();
   }
 
   // 質問表示
   const qIdx = S.diagStep - 1;
-  const q = DIAG_QUESTIONS[qIdx];
+  const allQ = getCurrentQuestions();
+  const q = allQ[qIdx];
   const ans = S.diagAnswers[q.id] || {};
-  const progress = (S.diagStep / DIAG_QUESTIONS.length) * 100;
+  const progress = (S.diagStep / getCurrentQuestions().length) * 100;
 
   return `
   <div class="diag-progress"><div class="diag-progress-bar" style="width:${progress}%"></div></div>
   <div class="diag-q">
-    <div class="diag-q-num">質問 ${S.diagStep} / ${DIAG_QUESTIONS.length}</div>
+    <div class="diag-q-num">質問 ${S.diagStep} / ${getCurrentQuestions().length}</div>
     <div class="diag-q-text">${e(q.text)}</div>
     <div class="diag-opts">
       ${q.opts.map((opt,i)=>`
@@ -686,7 +743,7 @@ function renderDiag() {
   <div class="sa" style="justify-content:space-between;">
     <button class="sb sb-blue" onclick="diagBack()" ${S.diagStep<=1?'disabled':''}>◀ 戻る</button>
     <button class="sb sb-purple" onclick="diagNext()" ${ans.optIdx===undefined?'disabled':''}>
-      ${S.diagStep === DIAG_QUESTIONS.length ? '▶ 診断する' : '▶ 次へ'}
+      ${S.diagStep === getCurrentQuestions().length ? '▶ 診断する' : '▶ 次へ'}
     </button>
   </div>
   ${S.diagError ? `<div class="eb">⚠ ${e(S.diagError)}</div>` : ''}`;
@@ -724,7 +781,7 @@ function renderDiagResult() {
     </div>` : ''}
   </div>
   <div class="sa" style="justify-content:space-between;">
-    <button class="sb sb-blue" onclick="startDiag()">▶ もう一度診断する</button>
+    <button class="sb sb-blue" onclick="startDiag()">▶ ${S.diagResults.length > 1 ? '再診断する' : 'もう一度診断する'}</button>
     <button class="sb sb-purple" onclick="set('tab','stats')">📊 統計と照らし合わせる</button>
   </div>`;
 }
@@ -924,18 +981,19 @@ function selectDiagOpt(qid, idx) {
 
 async function diagNext() {
   const freeEl = document.getElementById('diag-free-input');
-  const q = DIAG_QUESTIONS[S.diagStep-1];
+  const allQ2 = getCurrentQuestions();
+  const q = allQ2[S.diagStep-1];
   if (freeEl && q) {
     if (!S.diagAnswers[q.id]) S.diagAnswers[q.id] = {};
     S.diagAnswers[q.id].free = freeEl.value;
   }
-  if (S.diagStep < DIAG_QUESTIONS.length) {
+  if (S.diagStep < getCurrentQuestions().length) {
     S.diagStep++;
     render();
   } else {
     // 診断実行
     const {type, scores} = calcMazoType(S.diagAnswers);
-    S.diagStep = DIAG_QUESTIONS.length + 1;
+    S.diagStep = getCurrentQuestions().length + 1;
     S.diagLoading = true;
     render();
     try {
@@ -943,11 +1001,12 @@ async function diagNext() {
       const pastRef = S.diagResults.length > 0
         ? `\n過去の診断結果（参考）：${S.diagResults.slice(0,3).map(r=>r.type).join('、')}` : '';
       // 自由記述まとめ
-      const freeTexts = DIAG_QUESTIONS.map(q2 => {
+      const curQ = getCurrentQuestions();
+      const freeTexts = curQ.map(q2 => {
         const a = S.diagAnswers[q2.id];
         return a?.free ? `${q2.text}への補足：${a.free}` : '';
       }).filter(Boolean).join('\n');
-      const msg = `患者のマゾ診断結果は「${type}」です。${pastRef}\n\n各質問の回答：\n${DIAG_QUESTIONS.map(q2=>{const a=S.diagAnswers[q2.id];return a?.optIdx!==undefined?`${q2.text}→${q2.opts[a.optIdx]}`:'';}).filter(Boolean).join('\n')}\n\n${freeTexts}\n\n診断結果についてキャラクターとして3〜6文で深く洞察してコメントしてください。過去の診断との比較があれば言及し、今後の性的探求への具体的アドバイスも含めてください。セリフのみ回答：`;
+      const msg = `患者のマゾ診断結果は「${type}」です。${pastRef}\n\n各質問の回答：\n${curQ.map(q2=>{const a=S.diagAnswers[q2.id];return a?.optIdx!==undefined?`${q2.text}→${q2.opts[a.optIdx]}`:'';}).filter(Boolean).join('\n')}\n\n${freeTexts}\n\n診断結果についてキャラクターとして3〜6文で深く洞察してコメントしてください。過去の診断との比較があれば言及し、今後の性的探求への具体的アドバイスも含めてください。セリフのみ回答：`;
       const aiComment = await callAPI(CHARS[0].sys, msg);
       const result = {type, scores, aiComment, answers:S.diagAnswers, timestamp:new Date().toISOString()};
       try {
